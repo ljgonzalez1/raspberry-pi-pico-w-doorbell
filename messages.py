@@ -51,11 +51,13 @@ class Messages:
         message to each. It also sends a message to the Node-RED
         endpoint.
         """
-        self.__try_send_message(self._send_node_red_message)
+        if settings.ENABLE_NODE_RED:
+            self.__try_send_message(self._send_node_red_message)
 
-        for chat_id in settings.TELEGRAM_CHAT_IDS:
-            self.__try_send_message(self._send_telegram_message,
-                                    args=(chat_id,))
+        if settings.ENABLE_TELEGRAM:
+            for chat_id in settings.TELEGRAM_CHAT_IDS:
+                self.__try_send_message(self._send_telegram_message,
+                                        args=(chat_id,))
 
     def _send_telegram_message(self, chat_id):
         """
