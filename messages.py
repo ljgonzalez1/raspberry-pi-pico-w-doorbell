@@ -95,6 +95,28 @@ class Messages:
         self.__log_response(response)
         response.close()
 
+    def _send_whatsapp_message(self, phone_number):
+        """
+        Sends a message to a specified WhatsApp chat.
+
+        Parameters
+        ----------
+        phone_number : str
+            The Whatsapp chat where the message will be sent.
+        """
+        url = "https://api.telegram.org/" + \
+              f"bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
+        headers = {'Content-Type': 'application/json'}
+        data = {
+            "chat_id": f"{chat_id}",
+            "text": f"{settings.TELEGRAM_PAYLOAD}"
+        }
+
+        json_data = json.dumps(data)
+        response = requests.post(url, headers=headers, data=json_data)
+        self.__log_response(response)
+        response.close()
+
     def _send_node_red_message(self):
         """
         Sends a message to the configured Node-RED endpoint.
