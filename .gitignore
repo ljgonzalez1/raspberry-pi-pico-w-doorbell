@@ -76,3 +76,5 @@ fabric.properties
 #### Kate
 .*.kate-swp
 .swp.*
+#### Nano
+*.save
