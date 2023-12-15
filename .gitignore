@@ -80,3 +80,10 @@ fabric.properties
 .swp.*
 #### Nano
 *.save
+
+### Dotenv
+.env
+*.env
+!template.env
+!placeholder.env
+!example.env
