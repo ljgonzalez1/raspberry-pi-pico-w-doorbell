@@ -65,20 +65,13 @@ class Messages:
         - For Telegram, messages are sent to all chat IDs listed in
           `TELEGRAM_CHAT_IDS` from settings.
         """
-        msg_functions = []
-
         if settings.ENABLE_NODE_RED:
-            msg_functions.append((self._send_node_red_message,
-                                  tuple()))
+            self.__try_send_message(self._send_node_red_message)
 
         if settings.ENABLE_TELEGRAM:
             for chat_id in settings.TELEGRAM_CHAT_IDS:
-                msg_functions.append((self._send_telegram_message,
-                                      (chat_id,)))
-
-        self.__try_send_message(
-            tuple(msg_functions)
-        )
+                self.__try_send_message(self._send_telegram_message,
+                                        args=(chat_id,))
 
     def _send_telegram_message(self, chat_id):
         """
@@ -136,7 +129,7 @@ class Messages:
                   response.status_code)
 
     @staticmethod
-    def __try_send_message(*send_message_funcs):
+    def __try_send_message(send_message_func, args=tuple()):
         """
         Attempts to send a message using the specified function and
         arguments.
@@ -151,8 +144,7 @@ class Messages:
         try:
             WiFi.connect_wifi()
 
-            for func, args in send_message_funcs:
-                func(*args)
+            send_message_func(*args)
 
             # Deactivate WiFi to save energy
             WiFi.disconnect_wifi()
