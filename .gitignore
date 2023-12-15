@@ -11,3 +11,51 @@
 .nfs*
 .hidden
 *.swp
+#### WSL
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+artifacts/
+**/Properties/launchSettings.json
+$tf/
+AppPackages/
+BundleArtifacts/
+_pkginfo.txt
+wsl-builder/prepare-assets/prepare-assets
+wsl-builder/prepare-build/prepare-build
+*Zone.Identifier
+**/*Zone.Identifier
+*.Identifier
+Linux
+
+### IDEs / Editors
+### Visual Studio Code / VS Codium
+.vscode/*
+.vscode/
+.code/
+.code/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+.vs/
+ipch/
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.vsp
+*.vspx
+*.sap
+## files ending in .cache can be ignored
+*.[Cc]ache
+## but keep track of directories ending in .cache
+!*.[Cc]ache/
+*.plg
+*.opt
+*.vbw
+_Pvt_Extensions
