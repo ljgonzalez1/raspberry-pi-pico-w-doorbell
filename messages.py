@@ -73,6 +73,11 @@ class Messages:
                 self.__try_send_message(self._send_telegram_message,
                                         args=(chat_id,))
 
+        if settings.ENABLE_WHATSAPP:
+            for phone_number in settings.WHATSAPP_NUMBERS:
+                self.__try_send_message(self._send_whatsapp_vonage_message,
+                                        args=(phone_number,))
+
     def _send_telegram_message(self, chat_id):
         """
         Sends a message to a specified Telegram chat.
@@ -95,7 +100,7 @@ class Messages:
         self.__log_response(response)
         response.close()
 
-    def _send_whatsapp_message(self, phone_number):
+    def _send_whatsapp_vonage_message(self, phone_number):
         """
         Sends a message to a specified WhatsApp chat.
 
@@ -104,16 +109,23 @@ class Messages:
         phone_number : str
             The Whatsapp chat where the message will be sent.
         """
-        url = "https://api.telegram.org/" + \
-              f"bot{settings.TELEGRAM_BOT_TOKEN}/sendMessage"
+        url = f"{settings.WHATSAPP_API}"
         headers = {'Content-Type': 'application/json'}
         data = {
-            "chat_id": f"{chat_id}",
-            "text": f"{settings.TELEGRAM_PAYLOAD}"
+            "from": f"{settings.WHATSAPP_SOURCE_NUMBER}",
+            "to": f"{phone_number}",
+            "message_type": "text",
+            "text": f"{settings.WHATSAPP_PAYLOAD}",
+            "channel": "whatsapp"
         }
+        auth = (settings.WHATSAPP_API_USER, settings.WHATSAPP_API_PASSWORD)
 
         json_data = json.dumps(data)
-        response = requests.post(url, headers=headers, data=json_data)
+        response = requests.post(url,
+                                 headers=headers,
+                                 data=json_data,
+                                 auth=auth)
+
         self.__log_response(response)
         response.close()
 
