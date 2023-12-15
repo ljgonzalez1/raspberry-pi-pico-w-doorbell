@@ -25,6 +25,10 @@ SERIAL_LOGS : bool
     Flag to enable or disable serial logging throughout the project.
 
 """
+import credentials as secrets
+
+TELEGRAM_PAYLOAD = "Sonó el timbre"
+TELEGRAM_CHAT_IDS = secrets.TELEGRAM_CHAT_IDS
 
 HOST_PROTOCOL = "http"
 HOST_NAME = "10.0.10.4"

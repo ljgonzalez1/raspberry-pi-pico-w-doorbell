@@ -1,10 +1,6 @@
 """
 Module for storing WiFi credentials.
 
-This module contains the credentials required for WiFi connectivity. It is used
-by other modules in the project that require network access. The credentials
-are stored as constant variables.
-
 Important Note
 --------------
 The default values for the WiFi credentials are placeholders ('CHANGEME').
@@ -22,3 +18,10 @@ WIFI_PASS : str
 
 WIFI_SSID = "CHANGEME"
 WIFI_PASS = "CHANGEME"
+
+TELEGRAM_CHAT_IDS = [
+    "-1000000000001",
+    "-1000000000002",
+    "-1000000000003",
+    "-1000000000004"
+]
