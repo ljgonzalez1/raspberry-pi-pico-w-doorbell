@@ -76,10 +76,10 @@ class WiFi:
             iterations.
         """
         if WiFi.wlan.isconnected():
-            print("Ya conectado a WiFi.")
+            print("Already connected to WiFi.")
 
         try:
-            print("Conectando a WiFi...")
+            print("Connecting to a WiFi network...")
             # Conectarse a la red
             WiFi.wlan.active(True)
             WiFi.wlan.connect(WiFi.WIFI_SSID, WiFi.WIFI_PASS)
@@ -89,15 +89,17 @@ class WiFi:
                     break
 
                 else:
-                    print(f"Esperando conexión ({iters})")
+                    print(f"Waiting for connection ({iters})")
                     sleep(0.05)
 
                 if iters == 499:
-                    raise Exception("Máximo de iteraciones excedido")
+                    raise Exception("Maximum number of connection attempts "
+                                    "reached")
 
-            print("Conexión WiFi exitosa.")
+            print("Successfully connected to WiFi.")
+
         except Exception as e:
-            print(f"Error al conectar a WiFi: {e}")
+            print(f"Error connecting to WiFi: {e}")
 
     @staticmethod
     def disconnect_wifi():
@@ -117,4 +119,4 @@ class WiFi:
             WiFi.wlan.disconnect()
             WiFi.wlan.active(False)
         except Exception as e:
-            print(f"Error al desconectar WiFi: {e}")
+            print(f"Error disconnecting from WiFi: {e}")
