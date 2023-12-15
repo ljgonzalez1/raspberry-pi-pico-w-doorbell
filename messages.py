@@ -101,10 +101,26 @@ class Messages:
             return self.__locked
 
     def __init__(self):
+        """
+        Initializes the Messages object with a released lock.
+        """
         self.lock = Messages.Lock()
         self.lock.release()
 
     def __send(self):
+        """
+        A private method to manage the sending of a message.
+
+        This method checks if the lock is not acquired and proceeds
+        to send a message. It acquires
+        the lock before sending the message and releases it
+        afterward to ensure thread safety.
+
+        Notes
+        -----
+        - This method is intended to be called within a separate
+        thread.
+        """
         if not self.lock.is_locked:
             print("Tomando lock")
             self.lock.acquire()
@@ -113,6 +129,19 @@ class Messages:
             self.lock.release()
 
     def send(self):
+        """
+        Initiates the message sending process in a new thread.
+
+        This method checks if the lock is not already acquired and
+        starts a new thread to send the message.
+        If the lock is acquired, it indicates the lock is held by
+        another thread.
+
+        Notes
+        -----
+        - The actual message sending is handled by the private
+        method `__send`.
+        """
         if not self.lock.is_locked:
             print("Creando thread")
             _thread.start_new_thread(self.__send, ())
@@ -122,6 +151,19 @@ class Messages:
 
     @staticmethod
     def __send_msg():
+        """
+        A private static method to send a message using WiFi.
+
+        This method forms the URL using settings, sends a GET
+        request, and then logs the response.
+        It handles WiFi connectivity and disconnection to manage
+        network resources efficiently.
+
+        Notes
+        -----
+        - The method captures any exceptions during the message
+        sending process and logs them.
+        """
         try:
             WiFi.connect_wifi()
 
