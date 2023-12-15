@@ -16,11 +16,8 @@ heart = Heart(onboard_led)
 
 
 def pin_handler(pin):
-    heart.tachycardia()
     print(f"Interrupción detectada en pin {pin}")
-
-    sleep(0.1)
-
+    heart.off()
     messages = Messages()
     messages.send()
 
@@ -31,13 +28,9 @@ def read_intl(pin):
         pin_handler(pin)
 
 
-def polling(pin, iters=10):
-    for _ in range(iters):
-        read_intl(pin)
-        sleep(0.001)
-
-
 while True:
-    heart.beat()
-    polling(doorbell_pin, 2000)
+    for _ in heart.beat():
+        for _ in range(20):
+            read_intl(doorbell_pin)
+            sleep(0.0005)
 
