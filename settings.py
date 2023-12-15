@@ -27,6 +27,9 @@ SERIAL_LOGS : bool
 """
 import credentials as secrets
 
+WIFI_SSID = secrets.WIFI_SSID
+WIFI_PASS = secretes.WIFI_PASS
+
 TELEGRAM_PAYLOAD = "Sonó el timbre"
 TELEGRAM_CHAT_IDS = secrets.TELEGRAM_CHAT_IDS
 

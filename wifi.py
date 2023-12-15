@@ -21,7 +21,7 @@ To disconnect from a WiFi network:
 import network as net
 from utime import sleep
 
-import credentials
+import settings
 from logging import dprint as print
 
 
@@ -51,8 +51,8 @@ class WiFi:
         Disconnects from the WiFi network.
     """
 
-    WIFI_SSID = credentials.WIFI_SSID
-    WIFI_PASS = credentials.WIFI_PASS
+    WIFI_SSID = settings.WIFI_SSID
+    WIFI_PASS = settings.WIFI_PASS
     wlan = net.WLAN(net.STA_IF)
 
     @staticmethod
