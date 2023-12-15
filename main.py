@@ -14,6 +14,7 @@ doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
 
 heart = Heart(onboard_led)
 
+
 def pin_handler(pin):
     heart.tachycardia()
     print(f"Interrupción detectada en pin {pin}")
