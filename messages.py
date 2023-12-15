@@ -1,10 +1,12 @@
 """
 Module for managing and sending messages over WiFi.
 
-This module contains the Messages class, which handles sending messages over a WiFi connection.
-It leverages the settings from the `settings` module for network and message details. The Messages class supports
-sending messages to both a Node-RED endpoint and Telegram chats. It manages network connections efficiently and handles
-any exceptions that might occur during the message sending process.
+This module contains the Messages class, which handles sending messages over a
+WiFi connection. It leverages the settings from the `settings` module for
+network and message details. The Messages class supports sending messages to
+both a Node-RED endpoint and Telegram chats. It manages network connections
+efficiently and handles any exceptions that might occur during the message
+sending process.
 
 Classes
 -------
@@ -43,21 +45,40 @@ class Messages:
 
     def send(self):
         """
-        Sends messages to the configured Node-RED endpoint and
-        Telegram chats.
+        Sends messages to configured destinations based on settings.
 
-        This method iterates through the list of Telegram chat IDs
-        defined in settings and sends the configured
-        message to each. It also sends a message to the Node-RED
-        endpoint.
+        This method checks the settings to determine which messaging services
+        are enabled (Node-RED and/or Telegram) and sends messages accordingly.
+        If Node-RED messaging is enabled, it sends a message to the Node-RED
+        endpoint. If Telegram messaging is enabled, it iterates through the
+        list of Telegram chat IDs defined in settings and sends the configured
+        message to each chat.
+
+        The method uses private helper methods to manage the actual sending
+        process for each service.
+
+        Notes
+        -----
+        - The method checks the `ENABLE_NODE_RED` and `ENABLE_TELEGRAM`
+          flags in the settings to decide whether to send messages to Node-RED
+          and Telegram, respectively.
+        - For Telegram, messages are sent to all chat IDs listed in
+          `TELEGRAM_CHAT_IDS` from settings.
         """
+        msg_functions = []
+
         if settings.ENABLE_NODE_RED:
-            self.__try_send_message(self._send_node_red_message)
+            msg_functions.append((self._send_node_red_message,
+                                  tuple()))
 
         if settings.ENABLE_TELEGRAM:
             for chat_id in settings.TELEGRAM_CHAT_IDS:
-                self.__try_send_message(self._send_telegram_message,
-                                        args=(chat_id,))
+                msg_functions.append((self._send_telegram_message,
+                                      (chat_id,)))
+
+        self.__try_send_message(
+            tuple(msg_functions)
+        )
 
     def _send_telegram_message(self, chat_id):
         """
@@ -115,7 +136,7 @@ class Messages:
                   response.status_code)
 
     @staticmethod
-    def __try_send_message(send_message_func, args=tuple()):
+    def __try_send_message(*send_message_funcs):
         """
         Attempts to send a message using the specified function and
         arguments.
@@ -130,7 +151,8 @@ class Messages:
         try:
             WiFi.connect_wifi()
 
-            send_message_func(*args)
+            for func, args in send_message_funcs:
+                func(*args)
 
             # Deactivate WiFi to save energy
             WiFi.disconnect_wifi()

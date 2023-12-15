@@ -34,6 +34,10 @@ DOORBELL_PIN : int
     The GPIO pin number used for the doorbell input.
 SERIAL_LOGS : bool
     Flag to enable or disable serial logging throughout the project.
+ENABLE_TELEGRAM : bool
+    Flag to enable or disable sending messages to Telegram.
+ENABLE_NODE_RED : bool
+    Flag to enable or disable sending messages to Node-RED.
 """
 
 import credentials as secrets
