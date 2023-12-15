@@ -18,7 +18,6 @@ Example
 >>> messages = Messages()
 >>> messages.send()  # Sends messages as per the configured settings
 """
-from utime import sleep
 import urequests as requests
 import ujson as json
 from wifi import WiFi

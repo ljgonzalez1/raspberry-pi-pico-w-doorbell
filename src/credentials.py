@@ -6,13 +6,6 @@ bot integration. It is used by other modules in the project that require
 network access or need to interact with Telegram. The credentials are stored
 as constant variables.
 
-Important Note
---------------
-The default values for the WiFi and Telegram credentials are placeholders.
-Before deploying or running the
-application, ensure that these values are updated with the actual credentials
-for proper functionality.
-
 Attributes
 ----------
 WIFI_SSID : str
