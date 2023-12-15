@@ -87,3 +87,20 @@ fabric.properties
 !template.env
 !placeholder.env
 !example.env
+
+### Python
+__pycache__/
+*.pyc
+#### Virtual Environment
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+venv/
+.venv
+.venv/
+pip-selfcheck.json
