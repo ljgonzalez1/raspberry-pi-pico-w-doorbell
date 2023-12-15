@@ -1,4 +1,3 @@
-# import _thread
 from utime import sleep
 
 from logging import dprint as print
@@ -27,7 +26,6 @@ class Heart:
 
     def __normal_beat(self):
         print("Alive")
-        # for state in (0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0):
         for state in (0, 1, 1, 0):
             if state:
                 self.led.on()

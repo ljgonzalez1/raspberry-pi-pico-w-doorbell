@@ -1,6 +1,5 @@
 from utime import sleep
 import urequests
-# import _thread
 from wifi import WiFi
 
 import settings
@@ -47,7 +46,6 @@ class Messages:
         try:
             WiFi.connect_wifi()
 
-            # Construir la URL
             url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
                    f"{settings.HOST_PORT}" + \
                    f"/{settings.TARGET_PATH}" + \
@@ -55,22 +53,19 @@ class Messages:
                    f"&title={settings.MSG_TITLE}" + \
                    f"&tema={settings.MSG_SUBJECT}")
 
-            # Realizar la solicitud GET
             response = urequests.get(url)
 
-            # Imprimir la respuesta del servidor
             print(response.text)
 
             response.close()
 
-            # Desactivar wifi para ahorrar energía
+            # Deactivate WiFi to save energy
             WiFi.disconnect_wifi()
 
         except Exception as e:
             print(f"Error al enviar mensaje: {e}")
 
         finally:
-            # Asegurar que la conexión WiFi se cierre en caso de un error
             if WiFi.wlan.isconnected():
                 WiFi.disconnect_wifi()
 

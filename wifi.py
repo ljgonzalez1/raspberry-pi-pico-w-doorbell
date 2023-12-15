@@ -39,7 +39,7 @@ class WiFi():
     @staticmethod
     def disconnect_wifi():
         try:
-            # Cerrar la conexión WiFi
+            # Close the WiFi connection
             WiFi.wlan.disconnect()
             WiFi.wlan.active(False)
         except Exception as e:
