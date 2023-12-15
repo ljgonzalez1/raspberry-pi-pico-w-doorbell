@@ -1,77 +1,69 @@
+"""
+Module for managing and sending messages over WiFi.
+
+This module contains functionality to send messages via a WiFi connection.
+It utilizes the settings from the `settings` module for network and message details.
+The module provides a straightforward approach to sending messages, managing network
+connections efficiently, and handling any exceptions that might occur during the process.
+
+Functions
+---------
+send():
+    Sends a message using the settings specified in the settings module.
+
+Example
+-------
+>>> send()  # Sends a message using the settings specified in the settings module
+"""
 from utime import sleep
 import urequests
-# import _thread
 from wifi import WiFi
 
 import settings
 from logging import dprint as print
 
 
-class Messages:
-    class Lock:
-        def __init__(self):
-            self.__locked = False
+def send():
+    """
+    Sends a message using WiFi.
 
-        def acquire(self):
-            self.__locked = True
+    This function forms the URL using settings, sends a GET request,
+    and then logs the response.
+    It handles WiFi connectivity and disconnection to manage network
+    resources efficiently and
+    captures any exceptions during the message sending process.
 
-        def release(self):
-            self.__locked = False
+    Notes
+    -----
+    - Any exceptions encountered during message sending are logged,
+    and the WiFi is disconnected
+      in the finally block to ensure network resources are properly
+      managed.
+    """
+    try:
+        WiFi.connect_wifi()
 
-        @property
-        def is_locked(self):
-            return self.__locked
+        url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
+               f"{settings.HOST_PORT}" + \
+               f"/{settings.TARGET_PATH}" + \
+               f"?payload={settings.MSG_PAYLOAD}" + \
+               f"&title={settings.MSG_TITLE}" + \
+               f"&tema={settings.MSG_SUBJECT}")
 
-    def __init__(self):
-        self.lock = Messages.Lock()
-        self.lock.release()
+        response = urequests.get(url)
 
-    def __send(self):
-        if not self.lock.is_locked:
-            print("Tomando lock")
-            self.lock.acquire()
-            self.__send_msg()
-            print("Liberando lock")
-            self.lock.release()
+        print(response.text)
 
-    def send(self):
-        if not self.lock.is_locked:
-            print("Creando thread")
-            _thread.start_new_thread(self.__send, ())
+        response.close()
 
-        else:
-            print("Lock ocupado por otro Thread")
+        # Deactivate WiFi to save energy
+        WiFi.disconnect_wifi()
 
-    @staticmethod
-    def __send_msg():
-        try:
-            WiFi.connect_wifi()
+    except Exception as e:
+        print(f"Error al enviar mensaje: {e}")
 
-            # Construir la URL
-            url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
-                   f"{settings.HOST_PORT}" + \
-                   f"/{settings.TARGET_PATH}" + \
-                   f"?payload={settings.MSG_PAYLOAD}" + \
-                   f"&title={settings.MSG_TITLE}" + \
-                   f"&tema={settings.MSG_SUBJECT}")
-
-            # Realizar la solicitud GET
-            response = urequests.get(url)
-
-            # Imprimir la respuesta del servidor
-            print(response.text)
-
-            response.close()
-
-            # Desactivar wifi para ahorrar energía
+    finally:
+        if WiFi.wlan.isconnected():
             WiFi.disconnect_wifi()
 
-        except Exception as e:
-            print(f"Error al enviar mensaje: {e}")
-
-        finally:
-            # Asegurar que la conexión WiFi se cierre en caso de un error
-            if WiFi.wlan.isconnected():
-                WiFi.disconnect_wifi()
-
-
+        return
