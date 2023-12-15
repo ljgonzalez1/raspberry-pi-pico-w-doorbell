@@ -30,7 +30,7 @@ for _ in range(10):
 from utime import sleep
 
 from logging import dprint as print
-
+import settings
 
 class Heart:
     """
@@ -97,11 +97,12 @@ class Heart:
         for state in (0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                       1, 1, 1, 1, 1, 1, 1, 1, 1):
             for i in range(3):
-                if state:
-                    self.on()
+                if settings.HEARTBEAT:
+                    if state:
+                        self.on()
 
-                else:
-                    self.off()
+                    else:
+                        self.off()
 
                 sleep(0.01)
                 yield
