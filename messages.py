@@ -12,7 +12,7 @@ send():
     Sends a message using the settings specified in the settings module.
 """
 from utime import sleep
-import urequests
+import urequests as requests
 from wifi import WiFi
 
 import settings
@@ -21,11 +21,11 @@ from logging import dprint as print
 
 class Messages:
     def send(self):
-        self.try_send_message(__send_node_red_message)
-        self.try_send_message(__send_telegram_message)
+        self.try_send_message(self.__send_node_red_message)
+        self.try_send_message(self.__send_telegram_message)
 
     def __send_telegram_message(self):
-        pass
+        url =
 
     @staticmethod
     def __send_node_red_message():
@@ -36,7 +36,7 @@ class Messages:
                f"&title={settings.MSG_TITLE}" + \
                f"&tema={settings.MSG_SUBJECT}")
 
-        response = urequests.get(url)
+        response = requests.get(url)
 
         print(response.text)
 
