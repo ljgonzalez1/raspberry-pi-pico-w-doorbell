@@ -5,7 +5,7 @@ import gc
 import settings
 
 from heart import Heart
-from messages import send as send_message
+from messages import Messages
 
 from logging import dprint as print, show_mem as mem_info
 
@@ -14,13 +14,15 @@ doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
 
 heart = Heart(onboard_led)
 
+
 def pin_handler(pin):
     heart.tachycardia()
     print(f"Interrupción detectada en pin {pin}")
 
     sleep(0.1)
 
-    send_message()
+    messages = Messages()
+    messages.send()
 
 
 def read_intl(pin):
