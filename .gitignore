@@ -1,6 +1,8 @@
-### Gitignore
+### Git
 !.gitignore
 !**/.gitignore
+!.keep
+!**/.keep
 
 ### OS
 #### Linux
