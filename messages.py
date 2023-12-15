@@ -1,3 +1,26 @@
+"""
+Module for managing and sending messages over WiFi.
+
+This module contains the Messages class which is responsible for sending
+messages via a WiFi connection.
+It makes use of the settings from the `settings` module for network and
+message details. The class
+includes a locking mechanism to prevent concurrent message sending, ensuring
+message handling is
+thread-safe.
+
+Classes
+-------
+Messages
+    Handles the sending of messages and ensures thread-safe operations using
+    a locking mechanism.
+
+Example
+-------
+>>> msg = Messages()
+>>> msg.send()  # Sends a message using the settings specified in the
+settings module
+"""
 from utime import sleep
 import urequests
 from wifi import WiFi
@@ -7,18 +30,74 @@ from logging import dprint as print
 
 
 class Messages:
+    """
+    A class to handle message sending over WiFi.
+
+    This class provides functionalities to send messages over a WiFi
+    network. It uses a locking mechanism
+    to ensure that message sending is thread-safe and that messages are
+    sent one at a time.
+
+    Attributes
+    ----------
+    lock : Messages.Lock
+        A lock object to ensure thread-safe operations.
+
+    Methods
+    -------
+    send():
+        Initiates the message sending process in a new thread.
+    """
+
     class Lock:
+        """
+        A simple lock mechanism to control access to resources in a
+        thread-safe manner.
+
+        This inner class is used by the Messages class to prevent
+        concurrent execution of critical sections
+        of code, particularly for sending messages.
+
+        Attributes
+        ----------
+        __locked : bool, private
+            Indicates whether the lock is currently held or not.
+
+        Methods
+        -------
+        acquire():
+            Acquires the lock.
+        release():
+            Releases the lock.
+        is_locked:
+            Returns the current state of the lock.
+        """
         def __init__(self):
             self.__locked = False
 
         def acquire(self):
+            """
+            Acquires the lock, setting the lock state to True.
+            """
             self.__locked = True
 
         def release(self):
+            """
+            Releases the lock, setting the lock state to False.
+            """
             self.__locked = False
 
         @property
         def is_locked(self):
+            """
+            Returns the current state of the lock.
+
+            Returns
+            -------
+            bool
+                True if the lock is currently acquired,
+                False otherwise.
+            """
             return self.__locked
 
     def __init__(self):
