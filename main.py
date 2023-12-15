@@ -25,19 +25,16 @@ def pin_handler(pin):
     messages.send()
 
 
-def read_intl(pin):
+def read_int(pin):
     # If voltage is less than 2V, sends a signal
     if not pin.value():
         pin_handler(pin)
 
 
-def polling(pin, iters=10):
-    for _ in range(iters):
-        read_intl(pin)
+if __name__ == "__main__":
+    heart.start()
+
+    while True:
+        read_int(doorbell_pin)
         sleep(0.001)
-
-
-while True:
-    heart.beat()
-    polling(doorbell_pin, 2000)
 

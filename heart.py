@@ -23,7 +23,7 @@ heart.stop()   # Stop the heartbeat indicator
 """
 
 from utime import sleep
-
+import _thread as thread
 from logging import dprint as print
 
 
@@ -101,7 +101,7 @@ class Heart:
         self.__heart_rate = "normal"
         self.running = True
 
-    def beat(self):
+    def _beat(self):
         """
         Executes a heartbeat based on the current heart rate status.
 
@@ -123,7 +123,7 @@ class Heart:
 
         elif self.heart_rate == "fast":
             self.__fast_beat()
-            self.heart_rate = "normal"
+            self.normalize()
 
     def __alive(self):
         """
@@ -164,7 +164,8 @@ class Heart:
             else:
                 self.led.off()
 
-            sleep(0.02)
+            sleep(0.2)
+
         self.led.on()
         sleep(0.3)
 
@@ -181,7 +182,7 @@ class Heart:
         response to an external trigger.
         """
         print("Working")
-        sleep_time = 0.03
+        sleep_time = 0.01
         max_time = 5
 
         for _ in range(int(max_time / sleep_time / 2)):
@@ -206,6 +207,9 @@ class Heart:
           which calls `__fast_beat` based on the indicator status.
         """
         self.heart_rate = "fast"
+
+    def normalize(self):
+        self.heart_rate = "normal"
 
     @property
     def heart_rate(self):
@@ -268,7 +272,7 @@ class Heart:
         - The `__alive` method, running in the new thread, will continue as
         long as 'running' is True.
         """
-        _thread.start_new_thread(self.__alive, ())
+        thread.start_new_thread(self.__alive, ())
 
     def stop(self):
         """
@@ -291,9 +295,9 @@ if __name__ == '__main__':
     from machine import Pin
     import settings
 
-    onboard_led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
+    led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
 
-    heart = Heart(onboard_led)
+    heart = Heart(led)
 
     heart.__normal_beat()
     heart.__fast_beat()
