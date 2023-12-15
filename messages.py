@@ -73,6 +73,31 @@ class Messages:
                 self.__try_send_message(self._send_telegram_message,
                                         args=(chat_id,))
 
+        if settings.ENABLE_WHATSAPP:
+            for chat_id in settings.WHATSAPP_NUMBERS:
+                self.__try_send_message(self._send_whatsapp_vonage_message,
+                                        args=(chat_id,))
+
+    def _send_whatsapp_vonage_message(self, phone_number):
+        url = "https://messages-sandbox.nexmo.com/v1/messages"
+        headers = {'Content-Type': 'application/json',
+                   'Accept': 'application/json'}
+        data = {
+            "from": f"{settings.WHATSAPP_SOURCE_NUMBER}",
+            "to": f"{phone_number}",
+            "message_type": "text",
+            "text": f"{settings.WHATSAPP_PAYLOAD}",
+            "channel": "whatsapp"
+        }
+        credentials = (settings.WHATSAPP_API_USER,
+                       settings.WHATSAPP_API_PASSWORD)
+
+        json_data = json.dumps(data)
+        response = requests.post(url, headers=headers,
+                                 data=json_data, auth=credentials)
+        self.__log_response(response)
+        response.close()
+
     def _send_telegram_message(self, chat_id):
         """
         Sends a message to a specified Telegram chat.
@@ -156,3 +181,7 @@ class Messages:
             if WiFi.wlan.isconnected():
                 WiFi.disconnect_wifi()
 
+
+if __name__ == "__main__":
+    msg = Messages()
+    msg.send()
