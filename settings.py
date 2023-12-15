@@ -38,6 +38,8 @@ ENABLE_TELEGRAM : bool
     Flag to enable or disable sending messages to Telegram.
 ENABLE_NODE_RED : bool
     Flag to enable or disable sending messages to Node-RED.
+ENABLE_NODE_RED : bool
+    Flag to enable or disable sending messages to WhatsApp.
 """
 
 import credentials as secrets
@@ -48,6 +50,14 @@ WIFI_PASS = secrets.WIFI_PASS
 TELEGRAM_PAYLOAD = "Sonó el timbre"
 TELEGRAM_CHAT_IDS = secrets.TELEGRAM_CHAT_IDS
 TELEGRAM_BOT_TOKEN = secrets.TELEGRAM_BOT_TOKEN
+
+WHATSAPP_API = "https://messages-sandbox.nexmo.com/v1/messages"
+WHATSAPP_PAYLOAD = TELEGRAM_PAYLOAD
+WHATSAPP_NUMBERS = secrets.WHATSAPP_NUMBERS
+WHATSAPP_API_USER = secrets.WHATSAPP_API_USER
+WHATSAPP_API_PASSWORD = secrets.WHATSAPP_API_PASSWORD
+WHATSAPP_SOURCE_NUMBER = secrets.WHATSAPP_SOURCE_NUMBER
+
 
 HOST_PROTOCOL = "http"
 HOST_NAME = "10.0.10.4"
@@ -65,3 +75,4 @@ SERIAL_LOGS = True
 
 ENABLE_TELEGRAM = True
 ENABLE_NODE_RED = True
+ENABLE_WHATSAPP = True
