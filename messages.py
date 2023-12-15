@@ -10,10 +10,6 @@ Functions
 ---------
 send():
     Sends a message using the settings specified in the settings module.
-
-Example
--------
->>> send()  # Sends a message using the settings specified in the settings module
 """
 from utime import sleep
 import urequests
@@ -23,47 +19,46 @@ import settings
 from logging import dprint as print
 
 
-def send():
-    """
-    Sends a message using WiFi.
+class Messages:
+    def send(self):
+        self.__send_node_red_message()
+        self.__send_telegram_message():
 
-    This function forms the URL using settings, sends a GET request,
-    and then logs the response.
-    It handles WiFi connectivity and disconnection to manage network
-    resources efficiently and
-    captures any exceptions during the message sending process.
+    def __send_telegram_message(self):
+        pass
 
-    Notes
-    -----
-    - Any exceptions encountered during message sending are logged,
-    and the WiFi is disconnected
-      in the finally block to ensure network resources are properly
-      managed.
-    """
-    try:
-        WiFi.connect_wifi()
+    def __send_node_red_message(self):
+        def send_node_red()
+            url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
+                   f"{settings.HOST_PORT}" + \
+                   f"/{settings.TARGET_PATH}" + \
+                   f"?payload={settings.MSG_PAYLOAD}" + \
+                   f"&title={settings.MSG_TITLE}" + \
+                   f"&tema={settings.MSG_SUBJECT}")
 
-        url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
-               f"{settings.HOST_PORT}" + \
-               f"/{settings.TARGET_PATH}" + \
-               f"?payload={settings.MSG_PAYLOAD}" + \
-               f"&title={settings.MSG_TITLE}" + \
-               f"&tema={settings.MSG_SUBJECT}")
+            response = urequests.get(url)
 
-        response = urequests.get(url)
+            print(response.text)
 
-        print(response.text)
+            response.close()
 
-        response.close()
+        self.try_send_message(send_node_red)
 
-        # Deactivate WiFi to save energy
-        WiFi.disconnect_wifi()
+    @staticmethod
+    def try_send_message(send_message_func):
+        try:
+            WiFi.connect_wifi()
 
-    except Exception as e:
-        print(f"Error al enviar mensaje: {e}")
+            send_message_func()
 
-    finally:
-        if WiFi.wlan.isconnected():
+            # Deactivate WiFi to save energy
             WiFi.disconnect_wifi()
 
-        return
+        except Exception as e:
+            print(f"Error al enviar mensaje: {e}")
+
+        finally:
+            if WiFi.wlan.isconnected():
+                WiFi.disconnect_wifi()
+
+            return
