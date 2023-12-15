@@ -1,10 +1,9 @@
 """
-Module for debugging and memory information logging.
+Module for debugging logging.
 
-This module provides functionalities to print debug messages.
-These functionalities are active only when the SERIAL_LOGS flag from the
-settings module is set to True. This allows for easy enabling or disabling of
-logging for debugging purposes.
+This module provides functionalities to print debug messages, which are active
+only when the SERIAL_LOGS flag from the settings module is set to True. This
+allows for easy enabling or disabling of logging for debugging purposes.
 
 Functions
 ---------
