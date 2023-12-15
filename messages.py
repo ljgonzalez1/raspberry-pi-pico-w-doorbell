@@ -1,3 +1,4 @@
+# TODO: Fix the documentation
 """
 Module for managing and sending messages over WiFi.
 
