@@ -28,7 +28,7 @@ class Messages:
         pass
 
     def __send_node_red_message(self):
-        def send_node_red()
+        def send_node_red():
             url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
                    f"{settings.HOST_PORT}" + \
                    f"/{settings.TARGET_PATH}" + \
