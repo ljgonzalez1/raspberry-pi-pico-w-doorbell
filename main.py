@@ -30,7 +30,6 @@ def read_intl(pin):
 
 while True:
     for _ in heart.beat():
-        for _ in range(20):
+        for __ in range(300):
             read_intl(doorbell_pin)
             sleep(0.0005)
-
