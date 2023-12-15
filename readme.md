@@ -1,4 +1,4 @@
-# Raspberry Pi Pico Doorbell Extension
+# Raspberry Pi Pico W Doorbell Extension
 
 ## Overview
 This Raspberry Pi Pico project extends a traditional doorbell, enabling it to send notifications via Telegram and Node-RED when the doorbell button is pressed. It's ideal for those instances where you might not hear the doorbell. The system is designed to connect to the network only when necessary, minimizing its online presence.
