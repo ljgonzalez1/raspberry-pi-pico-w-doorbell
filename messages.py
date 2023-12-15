@@ -107,7 +107,7 @@ class Messages:
         self.lock = Messages.Lock()
         self.lock.release()
 
-    def __send(self):
+    def send(self):
         """
         A private method to manage the sending of a message.
 
@@ -122,32 +122,11 @@ class Messages:
         thread.
         """
         if not self.lock.is_locked:
-            print("Tomando lock")
+            print("Taking lock")
             self.lock.acquire()
             self.__send_msg()
-            print("Liberando lock")
+            print("Releasing lock")
             self.lock.release()
-
-    def send(self):
-        """
-        Initiates the message sending process in a new thread.
-
-        This method checks if the lock is not already acquired and
-        starts a new thread to send the message.
-        If the lock is acquired, it indicates the lock is held by
-        another thread.
-
-        Notes
-        -----
-        - The actual message sending is handled by the private
-        method `__send`.
-        """
-        if not self.lock.is_locked:
-            print("Creando thread")
-            _thread.start_new_thread(self.__send, ())
-
-        else:
-            print("Lock ocupado por otro Thread")
 
     @staticmethod
     def __send_msg():
