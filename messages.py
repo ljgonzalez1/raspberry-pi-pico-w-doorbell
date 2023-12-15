@@ -21,28 +21,26 @@ from logging import dprint as print
 
 class Messages:
     def send(self):
-        self.__send_node_red_message()
-        self.__send_telegram_message():
+        self.try_send_message(__send_node_red_message)
+        self.try_send_message(__send_telegram_message)
 
     def __send_telegram_message(self):
         pass
 
-    def __send_node_red_message(self):
-        def send_node_red():
-            url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
-                   f"{settings.HOST_PORT}" + \
-                   f"/{settings.TARGET_PATH}" + \
-                   f"?payload={settings.MSG_PAYLOAD}" + \
-                   f"&title={settings.MSG_TITLE}" + \
-                   f"&tema={settings.MSG_SUBJECT}")
+    @staticmethod
+    def __send_node_red_message():
+        url = (f"{settings.HOST_PROTOCOL}://{settings.HOST_NAME}:" + \
+               f"{settings.HOST_PORT}" + \
+               f"/{settings.TARGET_PATH}" + \
+               f"?payload={settings.MSG_PAYLOAD}" + \
+               f"&title={settings.MSG_TITLE}" + \
+               f"&tema={settings.MSG_SUBJECT}")
 
-            response = urequests.get(url)
+        response = urequests.get(url)
 
-            print(response.text)
+        print(response.text)
 
-            response.close()
-
-        self.try_send_message(send_node_red)
+        response.close()
 
     @staticmethod
     def try_send_message(send_message_func):
