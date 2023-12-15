@@ -190,3 +190,7 @@ class Messages:
             if WiFi.wlan.isconnected():
                 WiFi.disconnect_wifi()
 
+
+if __name__ == "__main__":
+    msg = Messages()
+    msg.send()
