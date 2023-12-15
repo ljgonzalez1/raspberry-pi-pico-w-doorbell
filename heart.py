@@ -94,7 +94,8 @@ class Heart:
         """
 
         print("Alive")
-        for state in (0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1):
+        for state in (0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                      1, 1, 1, 1, 1, 1, 1, 1, 1):
             for i in range(3):
                 if state:
                     self.on()
