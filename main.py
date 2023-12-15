@@ -5,7 +5,7 @@ import gc
 import settings
 
 from heart import Heart
-from messages import send as send_message
+from messages import Messages
 
 from logging import dprint as print, show_mem as mem_info
 
@@ -20,7 +20,7 @@ def pin_handler(pin):
 
     sleep(0.1)
 
-    send_message()
+    Messages.send()
 
 
 def read_intl(pin):

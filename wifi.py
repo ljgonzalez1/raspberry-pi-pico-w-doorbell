@@ -1,14 +1,16 @@
 """
 Module for managing WiFi connectivity.
 
-This module provides the WiFi class, which offers functionalities to connect to and disconnect from a WiFi network.
-It uses the WiFi credentials defined in the `credentials` module. The class is designed to be used across
+This module provides the WiFi class, which offers functionalities to connect to
+and disconnect from a WiFi network. It uses the WiFi credentials defined in the
+`credentials` module. The class is designed to be used across
 different parts of the project where network connectivity is required.
 
 Classes
 -------
 WiFi
-    Handles WiFi connections, providing methods to connect to and disconnect from a WiFi network.
+    Handles WiFi connections, providing methods to connect to and disconnect
+    from a WiFi network.
 
 Example
 -------
