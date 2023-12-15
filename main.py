@@ -21,7 +21,7 @@ def pin_handler(pin):
 
     sleep(0.1)
 
-    Messages.__send_msg()
+    Messages.send_msg()
 
 
 def read_intl(pin):
