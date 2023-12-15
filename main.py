@@ -14,21 +14,17 @@ doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
 heart = Heart(onboard_led)
 
 
-def pin_handler(pin):
-    print(f"Interrupción detectada en pin {pin}")
-    heart.off()
-    messages = Messages()
-    messages.send()
-
-
-def read_intl(pin):
-    # If voltage is less than 2V, sends a signal
+def poll(pin):
+    # If voltage is less than ~2V, sends a signal
     if not pin.value():
-        pin_handler(pin)
+        print(f"Interrupt detected in pin: {pin}")
+        heart.off()
+        messages = Messages()
+        messages.send()
 
 
 while True:
     for _ in heart.beat():
         for __ in range(300):
-            read_intl(doorbell_pin)
+            poll(doorbell_pin)
             sleep(0.0005)
