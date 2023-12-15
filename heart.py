@@ -139,7 +139,7 @@ class Heart:
         - The method will exit once the 'running' attribute is set to False.
         """
         while self.running:
-            self.beat()
+            self._beat()
 
     def __die(self):
         """
@@ -164,10 +164,10 @@ class Heart:
             else:
                 self.led.off()
 
-            sleep(0.2)
+            sleep(0.05)
 
         self.led.on()
-        sleep(0.3)
+        sleep(0.5)
 
     def __fast_beat(self):
         """
@@ -299,6 +299,7 @@ if __name__ == '__main__':
 
     heart = Heart(led)
 
-    heart.__normal_beat()
+    [heart.__normal_beat() for _ in range(5)]
     heart.__fast_beat()
+
 
