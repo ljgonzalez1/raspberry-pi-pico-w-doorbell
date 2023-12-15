@@ -38,9 +38,9 @@ class Heart:
     Pico board using an LED.
 
     The `Heart` class uses an onboard LED to indicate the operational status of
-    the Raspberry Pi Pico board. It simulates a heartbeat pattern to represent the board's activity.
-    This class is useful for monitoring the board's status in real-time, providing visual feedback
-    through LED patterns.
+    the Raspberry Pi Pico board. It simulates a heartbeat pattern to represent
+    the board's activity. This class is useful for monitoring the board's
+    status in real-time, providing visual feedback through LED patterns.
 
     Attributes
     ----------
@@ -50,7 +50,8 @@ class Heart:
     Methods
     -------
     beat():
-        Executes a heartbeat pattern. This method is a generator that yields LED states.
+        Executes a heartbeat pattern. This method is a generator that yields
+        LED states.
     on():
         Turns the LED on.
     off():
@@ -70,7 +71,8 @@ class Heart:
 
     def __init__(self, onboard_led):
         """
-        Initialize the Heart object as an indicator for the Raspberry Pi Pico board.
+        Initialize the Heart object as an indicator for the Raspberry Pi Pico
+        board.
 
         Parameters
         ----------
