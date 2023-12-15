@@ -17,7 +17,7 @@ heart = Heart(onboard_led)
 
 def pin_handler(pin):
     heart.tachycardia()
-    print(f"Interrupción detectada en pin {pin}")
+    print(f"Interrupt detected in pin pin {pin}")
 
     sleep(0.1)
 
@@ -31,10 +31,10 @@ def read_int(pin):
         pin_handler(pin)
 
 
-if __name__ == "__main__":
-    heart.start()
 
+if __name__ == "__main__":
     while True:
-        read_int(doorbell_pin)
-        sleep(0.001)
+        for _ in heart.beat():
+            read_int(pin)
+            sleep(0.001)
 
