@@ -5,7 +5,7 @@ import gc
 import settings
 
 from heart import Heart
-from messages import Messages
+from messages import send as send_message
 
 from logging import dprint as print, show_mem as mem_info
 
@@ -13,7 +13,6 @@ onboard_led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
 doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
 
 heart = Heart(onboard_led)
-msg = Messages()
 
 def pin_handler(pin):
     heart.tachycardia()
@@ -21,7 +20,7 @@ def pin_handler(pin):
 
     sleep(0.1)
 
-    Messages.send_msg()
+    send_message()
 
 
 def read_intl(pin):
