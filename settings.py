@@ -3,6 +3,17 @@ Module for storing configuration settings of the project.
 
 Attributes
 ----------
+WIFI_SSID : str
+    The SSID of the WiFi network, imported from the credentials module.
+WIFI_PASS : str
+    The password of the WiFi network, imported from the credentials module.
+TELEGRAM_PAYLOAD : str
+    The message payload to be sent to Telegram.
+TELEGRAM_CHAT_IDS : list
+    The list of Telegram chat IDs to send messages to, imported from the
+    credentials module.
+TELEGRAM_BOT_TOKEN : str
+    The token for the Telegram bot, imported from the credentials module.
 HOST_PROTOCOL : str
     The protocol used for network communication, e.g., 'http'.
 HOST_NAME : str
@@ -23,27 +34,28 @@ DOORBELL_PIN : int
     The GPIO pin number used for the doorbell input.
 SERIAL_LOGS : bool
     Flag to enable or disable serial logging throughout the project.
-
 """
+
 import credentials as secrets
 
 WIFI_SSID = secrets.WIFI_SSID
-WIFI_PASS = secretes.WIFI_PASS
+WIFI_PASS = secrets.WIFI_PASS
 
 TELEGRAM_PAYLOAD = "Sonó el timbre"
 TELEGRAM_CHAT_IDS = secrets.TELEGRAM_CHAT_IDS
+TELEGRAM_BOT_TOKEN = secrets.TELEGRAM_BOT_TOKEN
 
 HOST_PROTOCOL = "http"
 HOST_NAME = "10.0.10.4"
 HOST_PORT = "1880"
 
-TARGET_PATH="timbre"
-MSG_PAYLOAD="Son%C3%B3%20el%20timbre"
-MSG_TITLE="%C2%A1Timbre!"
-MSG_SUBJECT="tema"
+TARGET_PATH = "timbre"
+MSG_PAYLOAD = "Son%C3%B3%20el%20timbre"
+MSG_TITLE = "%C2%A1Timbre!"
+MSG_SUBJECT = "tema"
 
-LED_PIN="LED"
-DOORBELL_PIN=10
+LED_PIN = "LED"
+DOORBELL_PIN = 10
 
-SERIAL_LOGS=False
+SERIAL_LOGS = False
 
