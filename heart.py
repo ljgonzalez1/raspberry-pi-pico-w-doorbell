@@ -1,3 +1,27 @@
+"""
+Module for simulating heartbeats using an onboard LED on a Raspberry Pi Pico board.
+
+This module contains the Heart class, which controls an LED to indicate the operational status of a Raspberry Pi Pico board.
+The heartbeats are represented as 'normal' and 'fast' to signify the board's state, whether it's idle or actively processing tasks.
+The class is particularly useful for real-time monitoring of the board's status through visual feedback provided by LED patterns.
+
+Classes
+-------
+Heart
+    A class to represent an activity and status indicator for the Raspberry Pi Pico board using an LED.
+
+Example
+-------
+from machine import Pin
+import settings
+
+onboard_led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
+heart = Heart(onboard_led)
+heart.start()  # Start the heartbeat indicator
+# ... perform tasks ...
+heart.stop()   # Stop the heartbeat indicator
+"""
+
 from utime import sleep
 
 from logging import dprint as print
