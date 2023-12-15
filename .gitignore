@@ -1,3 +1,13 @@
 ### Gitignore
 !.gitignore
 !**/.gitignore
+
+### OS
+#### Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+.hidden
+*.swp
