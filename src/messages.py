@@ -21,6 +21,7 @@ Example
 import urequests as requests
 import ujson as json
 from wifi import WiFi
+import _thread as thread
 
 import settings
 from logging import dprint as print
@@ -41,6 +42,24 @@ class Messages:
         Sends messages to the configured Node-RED endpoint and
         Telegram chats.
     """
+
+    def __init__(self):
+        """
+        Initialize the class by creating a lock to synchronize
+        access to the send function.
+        """
+        self.lock = thread.allocate_lock()
+
+    def send_msg(self):
+        """
+        If the lock is already locked, do nothing.
+        Otherwise, start a new thread to call the send function,
+        passing no arguments.
+        """
+        if self.lock.locked():
+            return
+
+        thread.start_new_thread(self.send, tuple())
 
     def send(self):
         """
@@ -64,13 +83,14 @@ class Messages:
         - For Telegram, messages are sent to all chat IDs listed in
           `TELEGRAM_CHAT_IDS` from settings.
         """
-        if settings.ENABLE_NODE_RED:
-            self.__try_send_message(self._send_node_red_message)
+        with self.lock:
+            if settings.ENABLE_NODE_RED:
+                self.__try_send_message(self._send_node_red_message)
 
-        if settings.ENABLE_TELEGRAM:
-            for chat_id in settings.TELEGRAM_CHAT_IDS:
-                self.__try_send_message(self._send_telegram_message,
-                                        args=(chat_id,))
+            if settings.ENABLE_TELEGRAM:
+                for chat_id in settings.TELEGRAM_CHAT_IDS:
+                    self.__try_send_message(self._send_telegram_message,
+                                            args=(chat_id,))
 
     def _send_telegram_message(self, chat_id):
         """
