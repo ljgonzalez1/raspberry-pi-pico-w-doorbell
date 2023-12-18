@@ -15,14 +15,13 @@ heart = Heart(onboard_led)
 
 
 def interrupt_handler(pin):
-    # If voltage is less than ~2V, sends a signal
-    if not pin.value():
-        print(f"Interrupt detected in pin: {pin}")
-        heart.off()
-        messages = Messages()
-        messages.send()
+    print(f"Interrupt detected in pin: {pin}")
+    heart.off()
+    messages = Messages()
+    messages.send()
 
 
+# If voltage is less than ~2V, sends a signal
 doorbell_pin.irq(trigger=Pin.IRQ_FALLING, handler=interrupt_handler)
 
 while True:
