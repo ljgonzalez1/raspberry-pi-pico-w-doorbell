@@ -12,6 +12,7 @@ onboard_led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
 doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
 
 heart = Heart(onboard_led)
+messages = Messages()
 
 
 def poll(pin):
@@ -19,8 +20,7 @@ def poll(pin):
     if not pin.value():
         print(f"Interrupt detected in pin: {pin}")
         heart.off()
-        messages = Messages()
-        messages.send()
+        messages.send_msg()
 
 
 while True:
