@@ -1,57 +1,48 @@
 """
-Telegram notification provider implementation.
+Node-RED notification provider implementation.
 """
 import urequests
-import ujson
 from ..base_provider import BaseProvider
 from config import settings
 from utils.logging import dprint as print
 
 
-class TelegramProvider(BaseProvider):
-    """Provider for sending notifications via Telegram."""
+class NodeRedProvider(BaseProvider):
+    """Provider for sending notifications via Node-RED."""
 
     def __init__(self):
-        """Initialize the Telegram provider."""
-        if not settings.PROVIDER_TELEGRAM_ENABLED:
+        """Initialize the Node-RED provider."""
+        if not settings.PROVIDER_NODE_RED_ENABLED:
             return
 
-        self.bot_token = settings.TELEGRAM_BOT_TOKEN
-        self.base_url = f"https://api.telegram.org/bot{self.bot_token}"
+        self.config = settings.NODE_RED_CONFIG
 
     async def send(self, message):
-        """Send a message to all configured Telegram chats."""
-        if not settings.PROVIDER_TELEGRAM_ENABLED:
+        """Send a message to Node-RED endpoint."""
+        if not settings.PROVIDER_NODE_RED_ENABLED:
             return
 
         response = None
         try:
-            url = f"{self.base_url}/sendMessage"
+            url = (f"{self.config['protocol']}://{self.config['host']}:"
+                  f"{self.config['port']}/{self.config['path']}"
+                  f"?payload={self.config['payload']}"
+                  f"&title={self.config['title']}"
+                  f"&tema={self.config['subject']}")
 
-            for chat_id in settings.TELEGRAM_CHAT_IDS:
-                try:
-                    print(f"Sending Telegram message to {chat_id}")
+            print(f"Sending to Node-RED: {url}")
 
-                    data = {
-                        "chat_id": chat_id,
-                        "text": message
-                    }
+            response = urequests.get(url)
 
-                    response = urequests.post(
-                        url,
-                        headers={'Content-Type': 'application/json'},
-                        data=ujson.dumps(data)
-                    )
-
-                    if response.status_code == 200:
-                        print(f"Message sent to {chat_id}")
-                    else:
-                        print(f"Failed to send to {chat_id}: {response.text}")
-
-                finally:
-                    if response:
-                        response.close()
+            if response.status_code == 200:
+                print("Node-RED request successful")
+            else:
+                print(f"Node-RED request failed: {response.text}")
 
         except Exception as e:
-            print(f"Telegram error: {str(e)}")
+            print(f"Node-RED error: {str(e)}")
             raise
+
+        finally:
+            if response:
+                response.close()
