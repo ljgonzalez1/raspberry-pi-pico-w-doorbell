@@ -1,43 +1,17 @@
 """
-Logging utility for MicroPython, respecting the SERIAL_LOGS setting from
-src/config/settings.py.
-
-Provides a minimal Logger class with methods for different log levels.
+Logging utility module.
 """
-
 from config import settings
 
-class Logger:
+
+def dprint(*args, **kwargs):
     """
-    A simple logger that prints messages to the console if SERIAL_LOGS is enabled.
+    Debug print function.
+    Only prints if SERIAL_LOGS is enabled in settings.
+
+    Args:
+        *args: Variable length argument list to print
+        **kwargs: Arbitrary keyword arguments for print function
     """
-
-    def __init__(self, name: str):
-        """
-        Parameters
-        ----------
-        name : str
-            The module or class name that will appear in log messages.
-        """
-        self.name = name
-        self.enabled = settings.SERIAL_LOGS
-
-    def debug(self, msg: str):
-        """Logs a debug message."""
-        if self.enabled:
-            print(f"[DEBUG] {self.name}: {msg}")
-
-    def info(self, msg: str):
-        """Logs an info message."""
-        if self.enabled:
-            print(f"[INFO]  {self.name}: {msg}")
-
-    def warning(self, msg: str):
-        """Logs a warning message."""
-        if self.enabled:
-            print(f"[WARN]  {self.name}: {msg}")
-
-    def error(self, msg: str):
-        """Logs an error message."""
-        if self.enabled:
-            print(f"[ERROR] {self.name}: {msg}")
+    if settings.SERIAL_LOGS:
+        print(*args, **kwargs)

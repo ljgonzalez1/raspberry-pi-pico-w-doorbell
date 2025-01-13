@@ -1,33 +1,67 @@
 """
-LED heartbeat indicator functionality.
+LED heartbeat indicator module with multiple states and patterns.
 """
-
-import uasyncio as asyncio
+import uasyncio
 from machine import Pin
+from config import settings
+from utils.logging import dprint as print
 
 
 class HeartLED:
+    """
+    LED controller with multiple states and patterns.
+    Supports normal heartbeat, fast connecting blink, and solid sending state.
+    """
+
+    STATE_NORMAL = 'normal'
+    STATE_CONNECTING = 'connecting'
+    STATE_SENDING = 'sending'
+
     def __init__(self, led_pin: Pin):
+        """Initialize HeartLED with a pin."""
         self.led = led_pin
+        self.current_state = self.STATE_NORMAL
+        self._enabled = settings.LED_ENABLED
         self._running = True
 
     async def run(self):
-        """Runs the heartbeat pattern."""
-        while self._running:
-            await self._beat_pattern()
+        """Run the LED pattern based on current state."""
+        if not self._enabled:
+            self.off()
+            return
 
-    async def _beat_pattern(self):
-        """Executes one heartbeat pattern."""
-        patterns = [(0, 10), (1, 10), (1, 10), (0, 10),
-                    (1, 100), (0, 400)]
-        for state, duration in patterns:
-            self.led.value(state)
-            await asyncio.sleep_ms(duration)
+        while self._running:
+            pattern = settings.LED_PATTERNS[self.current_state]
+
+            for state, duration in pattern['pattern']:
+                if not self._running:
+                    break
+
+                self.led.value(state)
+
+                # Print "Alive" only in normal state when turning on
+                if (self.current_state == self.STATE_NORMAL and
+                    state == 1):
+                    print("Alive")
+
+                await uasyncio.sleep_ms(duration)
+
+    def set_state(self, state):
+        """Change the LED state/pattern."""
+        if not self._enabled:
+            return
+
+        if state in settings.LED_PATTERNS:
+            self.current_state = state
+        else:
+            print(f"Unknown LED state: {state}")
 
     def off(self):
-        """Turns off the LED."""
-        self.led.off()
+        """Turn off the LED."""
+        if self._enabled:
+            self.led.off()
 
     def stop(self):
-        """Stops the heartbeat."""
+        """Stop the LED pattern."""
         self._running = False
+        self.off()
