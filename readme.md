@@ -1,37 +1,73 @@
-# Raspberry Pi Pico W Doorbell Extension (v2)
+# Raspberry Pi Pico W Doorbell Extension
+
+![A_photo-realistic,_front-facing_image_of_a_traditional_rectangular__doorbell,_taller_than_wide,_attached_to_a_wooden_door_frame._The_metallic__doorbell_features_intricate_details,_and_the_circular_button_has_been__replaced_with_a_vibrant,_realistic_raspberry_fruit,_clearly_distinguishable__with_its_signature_bumpy_texture._The_raspberry_retains_a_small_portion_of__its_green_stem_for_a_natural_touch_and_emits_glowing_WiFi_signal_lines,__symbolizing_modern_connectivity._The_doorbell_occupies_most_of_the_frame,__emphasizing_the_raspberry_and_its_WiFi_signals_as_the_focal_point,_while__the_wooden_frame_is_minimally_visible.](./assets/raspberry-pi-pico-w-doorbell.png)
 
 ## Overview
-This **Raspberry Pi Pico W** project extends a traditional doorbell to send notifications asynchronously via **Telegram** and **Node-RED**. It uses **uasyncio** for non-blocking tasks, ensuring the doorbell is monitored continuously while handling network operations efficiently. The system connects to Wi-Fi only when needed, preserving power and bandwidth.
+This **Raspberry Pi Pico W** project extends a traditional doorbell to send notifications through multiple channels including Telegram, WhatsApp, SMS, Slack, Discord, and more. It uses **uasyncio** for non-blocking tasks, ensuring the doorbell is monitored continuously while handling network operations efficiently. The system connects to Wi-Fi only when needed, preserving power and bandwidth.
 
 ## Features
 - **Doorbell Signal Monitoring**: Detects doorbell button presses and sends notifications.
 - **Asynchronous Design**: Utilizes `uasyncio` for concurrent LED heartbeats and pin monitoring without blocking.
-- **Notifications**:
-  - **Telegram**: Sends messages to configured chat IDs via a bot token.
-  - **Node-RED**: Triggers HTTP GET requests to a Node-RED flow for further processing or automation.
-- **LED Heartbeat**: Onboard LED simulates a “heartbeat” pattern to indicate the system is running.
-- **Power-Efficient Networking**: Connects to Wi-Fi only when sending notifications, then disconnects.
+- **Multiple Notification Channels**:
+  - **Telegram**: Messages via bot API
+  - **WhatsApp**: Through Twilio's API
+  - **SMS**: Via Twilio
+  - **Slack**: Using webhooks
+  - **Discord**: Using webhooks
+  - **Pushover**: Native notifications
+  - **Node-RED**: HTTP endpoints
+  - **Simple GET**: Basic HTTP requests
+- **LED Status Indicator**: 
+  - Normal operation: Regular heartbeat pattern
+  - WiFi connecting: Fast blink (4x speed)
+  - Sending notifications: Solid ON
+  - Can be disabled in settings
+- **Power-Efficient Networking**: Single WiFi connection for all notifications
+
+![chat_example](./assets/chat.png)
 
 ## Pre-Setup
-1. **Telegram Bot**  
-   - Create a Telegram bot via [BotFather](https://core.telegram.org/bots#6-botfather).  
-   - Retrieve the Bot Token and Chat IDs.
-2. **Node-RED Flow**  
-   - Set up a Node-RED flow with an **HTTP In** node listening on the path you specify (default: `/timbre`).
-   - Connect it to a **Debug** or other nodes to handle the received `payload`.
-3. **Credentials**  
-   - Fill in `src/config/credentials.py` with your actual Wi-Fi SSID/password, Telegram token, chat IDs, and Node-RED server details.
+1. **WiFi Network**
+   - Have your WiFi SSID and password ready
+
+2. **Telegram Bot**  
+   - Create a bot via [BotFather](https://core.telegram.org/bots#6-botfather)
+   - Get the Bot Token and Chat IDs
+
+3. **Twilio Account** (for WhatsApp/SMS)
+   - Create account at [twilio.com](https://www.twilio.com)
+   - Note your Account SID and Auth Token
+   - Set up WhatsApp sandbox or SMS number
+
+4. **Slack Integration**
+   - Go to your Slack workspace
+   - Create new app or use existing
+   - Enable Incoming Webhooks
+   - Create and copy webhook URL
+
+5. **Discord Webhook**
+   - Open server settings
+   - Go to Integrations → Webhooks
+   - Create webhook and copy URL
+
+6. **Pushover**
+   - Create account at [pushover.net](https://pushover.net)
+   - Create application
+   - Note your user key and application token
+
+7. **Node-RED**
+   - Set up flow with HTTP input node
+   - Configure endpoint path
+   - Note server IP and port
 
 ## Hardware Setup
 
-> **Note**: The core wiring for the doorbell input pin is similar to a pull-up configuration, with the doorbell line pulled to ground when pressed.
-
-Example circuit
+> **Note**: The doorbell input uses a pull-up configuration, triggered when grounded.
 
 ```
     +------------------+
     |          (signal)|        (2.2k)
-    |             GP21 +--------/\/\/\--------------------------- Signal (+)
+    |             GP10 +--------/\/\/\--------------------------- Signal (+)
     | Raspberry        |
     | Pi        (~3.3V)|       +-------------------------+
     | Pico W      VSYS +-------+                     VCC +------- VCC
@@ -44,73 +80,187 @@ Example circuit
                                                                 ---
 ```
 
-
-1. **GP21** is configured as the doorbell pin (adjust if needed in `settings.
-   py`).
-2. **LED** can be the onboard LED, referenced as `"LED"` in code.
-3. **Power** the Raspberry Pi Pico W via USB or another stable 5V-3.3V supply.
+1. **GP10** is the default doorbell pin (configurable in `settings.py`)
+2. **LED** uses onboard LED (referenced as `"LED"` in code)
+3. **Power** via USB or regulated 5V-3.3V supply
 
 ## Software Components
-- **`main.py`**  
-  Entry point; starts `uasyncio` tasks for doorbell monitoring and LED heartbeat.
-- **`config/credentials.py`** & **`config/settings.py`**  
-  Store sensitive credentials and general configuration.
-- **`core/doorbell.py`**  
-  Monitors the doorbell pin, logs activity, triggers notifications.
-- **`core/heart_led.py`**  
-  Runs a simple heartbeat pattern on the onboard LED.
-- **`core/network.py`**  
-  Manages Wi-Fi connectivity (connect/disconnect).
-- **`notifications/providers`**  
-  Houses specific notification providers (e.g., `telegram_provider.py`, `node_red_provider.py`), each implementing `NotificationProvider`.
-- **`notifications/factory.py`** & **`notifications/notifier.py`**  
-  - `factory.py` selects which providers to enable based on `settings.ENABLED_PROVIDERS`.  
-  - `notifier.py` orchestrates sending messages to all active providers.
-- **`utils/logging.py`**  
-  Minimal logger respecting `SERIAL_LOGS` from `settings.py`.
+- **`main.py`**: Entry point and async task orchestration
+- **`config/`**:
+  - `credentials.py`: All sensitive configuration
+  - `settings.py`: General settings and provider configuration
+- **`core/`**:
+  - `heart_led.py`: LED status indicator
+  - `network_manager.py`: WiFi connection handling
+- **`notifications/`**:
+  - `notifier.py`: Notification orchestrator
+  - `base_provider.py`: Provider interface
+  - **`providers/`**:
+    - `telegram.py`: Telegram bot implementation
+    - `twilio_whatsapp.py`: WhatsApp via Twilio
+    - `twilio_sms.py`: SMS via Twilio
+    - `slack_webhook.py`: Slack integration
+    - `discord_webhook.py`: Discord integration
+    - `pushover.py`: Pushover notifications
+    - `node_red.py`: Node-RED integration
+    - `simple_get.py`: Basic GET requests
+- **`utils/`**:
+  - `logging.py`: Debug logging utilities
 
 ## Installation
-1. **Clone the repository** or download the project folder.
-2. **Update Credentials**  
-   - In `src/config/credentials.py`, set:
-     - `WIFI_SSID` and `WIFI_PASS`
-     - `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_IDS`
-     - `NODE_RED_HOST`, `NODE_RED_PORT`, `NODE_RED_PATH`
-3. **Adjust Settings**  
-   - In `src/config/settings.py`, confirm `ENABLED_PROVIDERS` includes the services you want: `['telegram', 'node_red']`.
-4. **Copy files** to your Raspberry Pi Pico W via `mpremote`, `Thonny`, or another method.
+1. **Get the Code**
+   ```bash
+   git clone https://github.com/yourusername/raspberry-pi-pico-w-doorbell.git
+   cd raspberry-pi-pico-w-doorbell
+   ```
 
-## Configuration
-- **Wi-Fi**: The system connects to the network using `network.py` whenever a notification is needed.
-- **Notification Providers**:
-  - **Telegram**: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_IDS` must be valid.
-  - **Node-RED**: `NODE_RED_CONFIG` should match your Node-RED server IP/port/path.
-- **LED & Doorbell Pins**:
-  - Change `LED_PIN` (`"LED"`) or `DOORBELL_PIN` (`10`) in `settings.py` if you use different pins.
+2. **Configure Credentials**
+   In `src/config/credentials.py`:
+   ```python
+   # WiFi
+   WIFI_SSID = "your_wifi_ssid"
+   WIFI_PASS = "your_wifi_password"
+
+   # Telegram
+   TELEGRAM_BOT_TOKEN = "your_bot_token"
+   TELEGRAM_CHAT_IDS = ["chat_id_1", "chat_id_2"]
+
+   # Twilio
+   TWILIO_ACCOUNT_SID = "your_account_sid"
+   TWILIO_AUTH_TOKEN = "your_auth_token"
+   TWILIO_FROM_PHONE = "+1234567890"
+   TWILIO_TO_PHONES = [
+    "+1234567890",
+    "+0987654321"
+   ]
+   
+   TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"
+   TWILIO_WHATSAPP_TO = [
+    "whatsapp:+1234567890"
+   ]
+
+   # Slack
+   SLACK_WEBHOOK_URLS = [
+       "https://hooks.slack.com/services/YOUR/WEBHOOK/URL1",
+       "https://hooks.slack.com/services/YOUR/WEBHOOK/URL2"
+   ]
+
+   # Discord
+   DISCORD_WEBHOOK_URLS = [
+       "https://discord.com/api/webhooks/YOUR/WEBHOOK/URL1",
+       "https://discord.com/api/webhooks/YOUR/WEBHOOK/URL2"
+   ]
+
+   # Pushover
+   PUSHOVER_TOKEN = "your_app_token"
+   PUSHOVER_USER_KEYS = [
+    "user_key_1",
+    "user_key_2"
+   ]
+
+   # Node-RED
+   NODE_RED_HOST = "10.0.0.10"
+   NODE_RED_PORT = "1880"
+   ```
+
+3. **Adjust Settings**
+   In `src/config/settings.py`, enable/disable providers:
+   ```python
+   # Provider Enablement
+   PROVIDER_TELEGRAM_ENABLED = True
+   PROVIDER_TWILIO_WHATSAPP_ENABLED = True
+   PROVIDER_TWILIO_SMS_ENABLED = True
+   PROVIDER_SLACK_ENABLED = True
+   PROVIDER_DISCORD_ENABLED = True
+   PROVIDER_PUSHOVER_ENABLED = True
+   PROVIDER_NODE_RED_ENABLED = True
+   PROVIDER_SIMPLE_GET_ENABLED = True
+
+   # LED Configuration
+   LED_ENABLED = True
+   LED_PATTERNS = {
+       'normal': {'pattern': [(0, 300), (1, 300)], 'repetitions': 1},
+       'connecting': {'pattern': [(0, 75), (1, 75)], 'repetitions': 1},
+       'sending': {'pattern': [(1, 1000)], 'repetitions': 1}
+   }
+   ```
+
+4. **Upload to Pico W**
+   - Using Thonny: Open files and "Save as" to Pico W
+   - Using mpremote:
+     ```bash
+     mpremote cp -r src/ :
+     ```
+
+## Configuration Details
+- **WiFi**: Single connection shared among all providers
+- **LED Patterns**: 
+  - Normal: 300ms on/off
+  - Connecting: 75ms on/off
+  - Sending: Solid on
+- **Providers**:
+  - Each can be independently enabled/disabled
+  - Separate configuration in settings
+  - Individual error handling
+  - Multiple recipients where supported
 
 ## Usage
-1. **Power on** the Raspberry Pi Pico W (USB or external 5V supply).
-2. The system will attempt to connect to Wi-Fi (see console output if `SERIAL_LOGS` is `True`).
-3. **Heartbeat**:
-   - The onboard LED will blink in a recurring pattern, indicating the device is running.
-4. **When the doorbell is pressed**:
-   - `Doorbell` logs “Doorbell pressed”.
-   - LED turns off briefly.
-   - A notification is sent to the enabled providers (Telegram, Node-RED, or both).
-5. **Node-RED**:
-   - The request is made to `http://<NODE_RED_HOST>:<NODE_RED_PORT>/<NODE_RED_PATH>?payload=Doorbell pressed`.
-6. **Telegram**:
-   - Messages are sent to each `TELEGRAM_CHAT_IDS` via your bot token.
+1. **Power Up**
+   - Connect Pico W to power
+   - LED starts heartbeat pattern if enabled
 
-![chat](./assets/chat.png)
+2. **Operation States**
+   - **Normal**: Regular LED heartbeat with "Alive" messages
+   - **Doorbell Press**: 
+     1. LED changes to connection pattern
+     2. WiFi connects
+     3. LED goes solid
+     4. Notifications sent
+     5. WiFi disconnects
+     6. Returns to normal heartbeat
+
+3. **Monitoring**
+   - Enable `SERIAL_LOGS = True` for detailed operation logs
+   - Each provider reports success/failure
+   - Network status is logged
+
+4. **LED States**
+   ```
+   Normal:     ▁▁▁▁▆▆▆▆▁▁▁▁▆▆▆▆▁▁▁▁▆▆▆▆▁▁▁▁▆▆▆▆
+   Connecting: ▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆▁▆
+   Sending:    ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+   ```
+
+## Troubleshooting
+- **No LED**: Check `LED_ENABLED` in settings
+- **No Notifications**: Verify provider credentials and enable flags
+- **WiFi Issues**: Check network credentials and connection timeout
+- **Provider Errors**: Enable logging and check specific provider messages
+
+## Memory Management
+- Enable only needed providers
+- Providers are loaded only if enabled
+- Single network connection for all notifications
+- Resources cleaned up after each notification
 
 ## Limitations and Improvements
-- **Asynchronous but not interrupt-based**: The doorbell uses a polling approach in an async loop. Future improvements might integrate interrupts for faster response.
-- **Single Wi-Fi SSID**: If you want to handle multiple Wi-Fi networks, you’d extend `credentials.py` or add logic to `network.py`.
-- **Memory constraints**: MicroPython on the Pico W has limited RAM. The project’s modular design helps, but keep an eye on memory usage if you add complex features.
+- **Async but Not Interrupt-Based**: Uses polling for doorbell
+- **Single WiFi Network**: No failover or multiple networks
+- **Memory Constraints**: Enable only necessary providers
+- **Network Dependency**: All providers require internet
 
 ## Contributing
-Pull requests, issues, and suggestions are welcome! Please ensure your changes align with best practices for MicroPython and embedded devices.
+Contributions welcome! Please:
+1. Fork the repository
+2. Create feature branch
+3. Follow code style
+4. Tests your code
+5. Submit pull request
 
 ## License
-This project is licensed under the MIT License — see [licence.txt](./licence.txt) for details.
+MIT License - see [license](./LICENSE)
+
+## Support
+- Open issues on GitHub
+- Enable logging for troubleshooting
+- Check provider documentation for specific issues
