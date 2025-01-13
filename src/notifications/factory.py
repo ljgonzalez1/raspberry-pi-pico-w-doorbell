@@ -1,7 +1,7 @@
 """
 Factory for creating notification providers.
 """
-from typing import List
+
 from .notifier import Notifier
 from .providers.base import NotificationProvider
 from .providers import (
@@ -16,7 +16,7 @@ class NotificationFactory:
     }
 
     @classmethod
-    def create_notifier(cls, enabled_providers: List[str]) -> Notifier:
+    def create_notifier(cls, enabled_providers) -> Notifier:
         """Creates a notifier with the specified providers."""
         providers = []
         for provider_name in enabled_providers:

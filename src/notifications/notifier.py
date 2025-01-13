@@ -1,12 +1,11 @@
 """
 Main notification orchestrator.
 """
-from typing import List
 from .providers.base import NotificationProvider
 
 
 class Notifier:
-    def __init__(self, providers: List[NotificationProvider]):
+    def __init__(self, providers):
         self.providers = providers
 
     async def notify(self, message: str):
