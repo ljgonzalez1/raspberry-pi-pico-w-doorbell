@@ -5,20 +5,12 @@ from typing import List
 from .notifier import Notifier
 from .providers.base import NotificationProvider
 from .providers import (
-    TelegramProvider,
-    NodeRedProvider,
-    SlackProvider,
-    WebhookProvider,
-    HomeAssistantProvider
+    telegram_provider
 )
 
 class NotificationFactory:
     _providers = {
-        'telegram': TelegramProvider,
-        'node_red': NodeRedProvider,
-        'slack': SlackProvider,
-        'webhook': WebhookProvider,
-        'home_assistant': HomeAssistantProvider
+        'telegram': telegram_provider
     }
 
     @classmethod
