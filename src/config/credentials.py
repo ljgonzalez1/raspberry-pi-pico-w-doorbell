@@ -1,20 +1,23 @@
 """
-Sensitive credentials required by the application.
-
-Replace these placeholder values with your actual credentials.
+Credentials module for storing sensitive configuration data.
+Do not commit this file without placeholder values to version control.
 """
 
-# Wi-Fi Credentials
-WIFI_SSID = "Your_WiFi_SSID"
-WIFI_PASS = "Your_WiFi_Password"
+# WiFi Configuration
+WIFI_SSID = "YOUR_WIFI_SSID"
+WIFI_PASS = "YOUR_WIFI_PASSWORD"
 
-# Telegram Credentials
-TELEGRAM_BOT_TOKEN = "Your_Telegram_Bot_Token"
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN = "YOUR_BOT_TOKEN"
 TELEGRAM_CHAT_IDS = [
-    "Your_Telegram_Chat_ID"
+    "CHAT_ID_1",
+    "CHAT_ID_2"
 ]
 
 # Node-RED Configuration
-NODE_RED_HOST = "10.0.10.4"
+NODE_RED_HOST = "10.0.0.10"
 NODE_RED_PORT = "1880"
-NODE_RED_PATH = "timbre"     # Node-RED flow path
+
+# Simple GET Configuration
+SIMPLE_GET_HOST = "10.0.7.10"
+SIMPLE_GET_PORT = "6061"

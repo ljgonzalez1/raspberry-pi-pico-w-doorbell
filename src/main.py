@@ -1,45 +1,69 @@
 """
-Main entry point for the doorbell application.
-Initializes and runs the doorbell monitoring system.
+Main application entry point.
 """
+import uasyncio
 from machine import Pin
-import uasyncio as asyncio
 
 from config import settings
-from core.doorbell import Doorbell
 from core.heart_led import HeartLED
-from notifications.factory import NotificationFactory
+from notifications.notifier import Notifier
+from notifications.providers.telegram import TelegramProvider
+from notifications.providers.node_red import NodeRedProvider
+from notifications.providers.simple_get import SimpleGetProvider
+from utils.logging import dprint as print
+
+
+# Initialize hardware
+led_pin = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
+doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
+
+# Initialize components
+heart = HeartLED(led_pin)
+if not settings.LED_ENABLED:
+    heart.stop()
+
+# Initialize enabled providers
+providers = []
+if settings.PROVIDER_TELEGRAM_ENABLED:
+    providers.append(TelegramProvider())
+if settings.PROVIDER_NODE_RED_ENABLED:
+    providers.append(NodeRedProvider())
+if settings.PROVIDER_SIMPLE_GET_ENABLED:
+    providers.append(SimpleGetProvider())
+
+# Initialize notifier
+notifier = Notifier(providers, heart)
+
+
+async def monitor_doorbell():
+    """Monitor doorbell state and trigger notifications."""
+    while True:
+        if not doorbell_pin.value():
+            print("Doorbell pressed!")
+            await notifier.notify("Doorbell pressed!")
+            # Debounce delay
+            await uasyncio.sleep_ms(500)
+        await uasyncio.sleep_ms(1)
 
 
 async def main():
-    # Initialize LED and doorbell pins
-    led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
-    doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
-
-    # Initialize components
-    heart = HeartLED(led)
-    notifier = NotificationFactory.create_notifier(settings.ENABLED_PROVIDERS)
-    doorbell = Doorbell(doorbell_pin, heart, notifier)
-
-    # Create tasks
+    """Main application coroutine."""
     tasks = [
-        asyncio.create_task(heart.run()),
-        asyncio.create_task(doorbell.monitor())
+        uasyncio.create_task(heart.run()),
+        uasyncio.create_task(monitor_doorbell())
     ]
-
-    # Run event loop
-    await asyncio.gather(*tasks)
+    await uasyncio.gather(*tasks)
 
 
-if __name__ == '__main__':
-    while True:
-        try:
-            asyncio.run(main())
-        except KeyboardInterrupt:
-            print("Application stopped")
-            break
-
-        except Exception as e:
-            print("Exception:", e)
-
-        asyncio.sleep_ms(1000)
+# Run the event loop
+try:
+    print("Starting doorbell monitor...")
+    uasyncio.run(main())
+except KeyboardInterrupt:
+    print("Application stopped")
+except Exception as e:
+    print(f"Fatal error: {str(e)}")
+finally:
+    # Clean up
+    if heart:
+        heart.stop()
