@@ -32,7 +32,14 @@ async def main():
 
 
 if __name__ == '__main__':
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("Application stopped")
+    while True:
+        try:
+            asyncio.run(main())
+        except KeyboardInterrupt:
+            print("Application stopped")
+            break
+
+        except Exception as e:
+            print("Exception:", e)
+
+        asyncio.sleep_ms(1000)
