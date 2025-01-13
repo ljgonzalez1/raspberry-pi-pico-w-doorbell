@@ -54,3 +54,36 @@ SIMPLE_GET_CONFIG = {
 
 # Debug Configuration
 SERIAL_LOGS = True
+
+# Twilio WhatsApp Configuration
+PROVIDER_TWILIO_WHATSAPP_ENABLED = True
+TWILIO_WHATSAPP_CONFIG = {
+    'account_sid': creds.TWILIO_ACCOUNT_SID,
+    'auth_token': creds.TWILIO_AUTH_TOKEN,
+    'from_number': creds.TWILIO_WHATSAPP_FROM,
+    'to_numbers': creds.TWILIO_WHATSAPP_TO
+}
+
+# Twilio SMS Configuration
+PROVIDER_TWILIO_SMS_ENABLED = True
+TWILIO_SMS_CONFIG = {
+    'account_sid': creds.TWILIO_ACCOUNT_SID,
+    'auth_token': creds.TWILIO_AUTH_TOKEN,
+    'from_number': creds.TWILIO_FROM_PHONE,
+    'to_numbers': creds.TWILIO_TO_PHONES
+}
+
+# Slack Configuration
+PROVIDER_SLACK_ENABLED = True
+SLACK_WEBHOOK_URLS = creds.SLACK_WEBHOOK_URLS
+
+# Discord Configuration
+PROVIDER_DISCORD_ENABLED = True
+DISCORD_WEBHOOK_URLS = creds.DISCORD_WEBHOOK_URLS
+
+# Pushover Configuration
+PROVIDER_PUSHOVER_ENABLED = True
+PUSHOVER_CONFIG = {
+    'token': creds.PUSHOVER_TOKEN,
+    'user_keys': creds.PUSHOVER_USER_KEYS
+}

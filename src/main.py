@@ -10,6 +10,11 @@ from notifications.notifier import Notifier
 from notifications.providers.telegram import TelegramProvider
 from notifications.providers.node_red import NodeRedProvider
 from notifications.providers.simple_get import SimpleGetProvider
+from notifications.providers.twilio_whatsapp import TwilioWhatsAppProvider
+from notifications.providers.twilio_sms import TwilioSMSProvider
+from notifications.providers.slack_webhook import SlackWebhookProvider
+from notifications.providers.discord_webhook import DiscordWebhookProvider
+from notifications.providers.pushover import PushoverProvider
 from utils.logging import dprint as print
 
 
@@ -30,6 +35,16 @@ if settings.PROVIDER_NODE_RED_ENABLED:
     providers.append(NodeRedProvider())
 if settings.PROVIDER_SIMPLE_GET_ENABLED:
     providers.append(SimpleGetProvider())
+if settings.PROVIDER_TWILIO_WHATSAPP_ENABLED:
+    providers.append(TwilioWhatsAppProvider())
+if settings.PROVIDER_TWILIO_SMS_ENABLED:
+    providers.append(TwilioSMSProvider())
+if settings.PROVIDER_SLACK_ENABLED:
+    providers.append(SlackWebhookProvider())
+if settings.PROVIDER_DISCORD_ENABLED:
+    providers.append(DiscordWebhookProvider())
+if settings.PROVIDER_PUSHOVER_ENABLED:
+    providers.append(PushoverProvider())
 
 # Initialize notifier
 notifier = Notifier(providers, heart)
