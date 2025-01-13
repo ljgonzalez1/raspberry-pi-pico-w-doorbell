@@ -1,30 +1,38 @@
+"""
+Main entry point for the doorbell application.
+Initializes and runs the doorbell monitoring system.
+"""
 from machine import Pin
-from utime import sleep
+import uasyncio as asyncio
 
-import settings
-
-from heart import Heart
-from messages import Messages
-
-from logging import dprint as print
-
-onboard_led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
-doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
-
-heart = Heart(onboard_led)
+from config import settings
+from core.doorbell import Doorbell
+from core.heart_led import HeartLED
+from notifications.factory import NotificationFactory
 
 
-def poll(pin):
-    # If voltage is less than ~2V, sends a signal
-    if not pin.value():
-        print(f"Interrupt detected in pin: {pin}")
-        heart.off()
-        messages = Messages()
-        messages.send()
+async def main():
+    # Initialize LED and doorbell pins
+    led = Pin(settings.LED_PIN, mode=Pin.OUT, value=0)
+    doorbell_pin = Pin(settings.DOORBELL_PIN, Pin.IN, Pin.PULL_UP)
+
+    # Initialize components
+    heart = HeartLED(led)
+    notifier = NotificationFactory.create_notifier(settings.ENABLED_PROVIDERS)
+    doorbell = Doorbell(doorbell_pin, heart, notifier)
+
+    # Create tasks
+    tasks = [
+        asyncio.create_task(heart.run()),
+        asyncio.create_task(doorbell.monitor())
+    ]
+
+    # Run event loop
+    await asyncio.gather(*tasks)
 
 
-while True:
-    for _ in heart.beat():
-        for __ in range(300):
-            poll(doorbell_pin)
-            sleep(0.0005)
+if __name__ == '__main__':
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("Application stopped")
