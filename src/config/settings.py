@@ -11,7 +11,8 @@ LED_ENABLED = True
 # Network Configuration
 WIFI_SSID = creds.WIFI_SSID
 WIFI_PASS = creds.WIFI_PASS
-WIFI_CONNECT_TIMEOUT = 10  # seconds
+
+WIFI_CONNECT_TIMEOUT = 60  # seconds
 
 # LED Patterns (state, duration_ms)
 LED_PATTERNS = {

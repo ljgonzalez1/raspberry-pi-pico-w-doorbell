@@ -3,6 +3,7 @@ Network manager for WiFi connections.
 """
 import network
 import utime
+import uasyncio
 from config import settings
 from utils.logging import dprint as print
 
@@ -46,21 +47,26 @@ class NetworkManager:
 
             # Wait for connection with retries
             attempts = 0
-            max_attempts = 20  # 20 intentos, cada uno con espera de 0.5s = 10s total
+            max_attempts = 120  # 120 * 0.5s = 60s total
 
             while not self.wlan.isconnected() and attempts < max_attempts:
+
+
                 attempts += 1
                 print(f"Connection attempt {attempts}/{max_attempts}")
 
                 status = self.wlan.status()
                 if status == network.STAT_CONNECTING:
                     print("Still connecting...")
+
                 elif status == network.STAT_WRONG_PASSWORD:
                     print("Wrong password")
                     return False
+
                 elif status == network.STAT_NO_AP_FOUND:
                     print("Network not found")
                     return False
+
                 elif status == network.STAT_CONNECT_FAIL:
                     print("Connection failed")
                     # Intentar reconectar
