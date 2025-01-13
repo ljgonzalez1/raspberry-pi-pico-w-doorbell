@@ -5,12 +5,14 @@ from typing import List
 from .notifier import Notifier
 from .providers.base import NotificationProvider
 from .providers import (
-    telegram_provider
+    telegram_provider,
+    node_red_provider
 )
 
 class NotificationFactory:
     _providers = {
-        'telegram': telegram_provider
+        'telegram': telegram_provider,
+        'node_red': node_red_provider
     }
 
     @classmethod

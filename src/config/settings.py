@@ -12,7 +12,10 @@ WIFI_SSID = credentials.WIFI_SSID
 WIFI_PASS = credentials.WIFI_PASS
 
 # Notification Providers
-ENABLED_PROVIDERS = ['telegram', 'node_red']  # Add/remove as needed
+ENABLED_PROVIDERS = [
+    'telegram',
+    'node_red'
+]  # Add/remove as needed
 
 # Provider-specific Settings
 TELEGRAM_BOT_TOKEN = credentials.TELEGRAM_BOT_TOKEN

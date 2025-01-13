@@ -1,16 +1,20 @@
 """
 Sensitive credentials required by the application.
 
-Replace these placeholder values with your actual Wi-Fi and Telegram credentials.
+Replace these placeholder values with your actual credentials.
 """
 
 # Wi-Fi Credentials
-WIFI_SSID = "CHANGEME_WIFI_SSID"
-WIFI_PASS = "CHANGEME_WIFI_PASS"
+WIFI_SSID = "Your_WiFi_SSID"
+WIFI_PASS = "Your_WiFi_Password"
 
 # Telegram Credentials
-TELEGRAM_BOT_TOKEN = "123456789:ABCDEFGHIJKLMNO_PQRSTUVWXYZ12345"
+TELEGRAM_BOT_TOKEN = "Your_Telegram_Bot_Token"
 TELEGRAM_CHAT_IDS = [
-    "1234567890",   # Ejemplo de Chat ID (chat privado)
-    "-100987654321" # Ejemplo de Chat ID (grupo)
+    "Your_Telegram_Chat_ID"
 ]
+
+# Node-RED Configuration
+NODE_RED_HOST = "10.0.10.4"  # Dirección IP o dominio del servidor Node-RED
+NODE_RED_PORT = "1880"       # Puerto (por defecto 1880 en Node-RED)
+NODE_RED_PATH = "timbre"     # Ruta del flujo en Node-RED
