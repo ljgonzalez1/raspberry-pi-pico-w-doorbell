@@ -39,9 +39,11 @@ class Notifier:
             # Connect to network if needed
             if not self.network.is_connected():
                 connected = await self.network.connect()
+
                 if not connected:
                     print("Failed to establish network connection")
                     return
+
                 network_connected = True
 
             if self.heart_led:
@@ -63,11 +65,13 @@ class Notifier:
             # Report failed providers
             if failed_providers:
                 print("Failed providers:")
+
                 for provider in failed_providers:
                     print(f"  - {provider}")
 
         finally:
             if self.heart_led:
                 self.heart_led.set_state(self.heart_led.STATE_NORMAL)
+
             if network_connected:
                 self.network.disconnect()

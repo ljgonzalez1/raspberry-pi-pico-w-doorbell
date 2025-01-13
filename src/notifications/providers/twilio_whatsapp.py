@@ -30,7 +30,7 @@ class TwilioWhatsAppProvider(BaseProvider):
             response = None
             try:
                 url = (f"https://api.twilio.com/2010-04-01/Accounts/"
-                      f"{self.config['account_sid']}/Messages.json")
+                       f"{self.config['account_sid']}/Messages.json")
 
                 headers = {
                     'Authorization': f'Basic {self.auth}',
@@ -38,14 +38,15 @@ class TwilioWhatsAppProvider(BaseProvider):
                 }
 
                 data = (f"From={self.config['from_number']}&"
-                       f"To={to_number}&"
-                       f"Body={message}")
+                        f"To={to_number}&"
+                        f"Body={message}")
 
                 print(f"Sending WhatsApp to {to_number}")
                 response = urequests.post(url, headers=headers, data=data)
 
                 if response.status_code == 201:
                     print(f"WhatsApp sent to {to_number}")
+
                 else:
                     print(f"Failed to send WhatsApp: {response.text}")
 

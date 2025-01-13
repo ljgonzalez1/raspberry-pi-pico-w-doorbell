@@ -53,6 +53,7 @@ class HeartLED:
 
         if state in settings.LED_PATTERNS:
             self.current_state = state
+
         else:
             print(f"Unknown LED state: {state}")
 

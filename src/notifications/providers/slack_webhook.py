@@ -39,6 +39,7 @@ class SlackWebhookProvider(BaseProvider):
 
                 if response.status_code == 200:
                     print("Slack message sent")
+
                 else:
                     print(f"Failed to send to Slack: {response.text}")
 

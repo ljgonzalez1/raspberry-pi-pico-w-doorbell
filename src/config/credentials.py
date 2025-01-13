@@ -25,11 +25,13 @@ SIMPLE_GET_PORT = "6061"
 # Twilio Configuration
 TWILIO_ACCOUNT_SID = "YOUR_ACCOUNT_SID"
 TWILIO_AUTH_TOKEN = "YOUR_AUTH_TOKEN"
+
 TWILIO_FROM_PHONE = "YOUR_TWILIO_PHONE"  # With country code
 TWILIO_TO_PHONES = [
     "RECIPIENT_PHONE_1",  # With country code
     "RECIPIENT_PHONE_2"
 ]
+
 TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"  # Twilio's WhatsApp number
 TWILIO_WHATSAPP_TO = [
     "whatsapp:+1234567890"  # Recipients' WhatsApp numbers

@@ -25,6 +25,7 @@ class DiscordWebhookProvider(BaseProvider):
 
         for webhook_url in self.webhook_urls:
             response = None
+
             try:
                 data = {
                     "content": message
@@ -39,6 +40,7 @@ class DiscordWebhookProvider(BaseProvider):
 
                 if response.status_code == 204:
                     print("Discord message sent")
+
                 else:
                     print(f"Failed to send to Discord: {response.text}")
 

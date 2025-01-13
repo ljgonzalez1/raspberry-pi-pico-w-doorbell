@@ -20,13 +20,16 @@ class NetworkManager:
             cls._instance = super(NetworkManager, cls).__new__(cls)
             cls._instance.wlan = network.WLAN(network.STA_IF)
             cls._instance.is_initialized = False
+
         return cls._instance
 
     def __init__(self):
         if not self.is_initialized:
             self.ssid = settings.WIFI_SSID
             self.password = settings.WIFI_PASS
+
             self.timeout = settings.WIFI_CONNECT_TIMEOUT
+
             self.wlan.active(True)
             self.is_initialized = True
 
@@ -50,6 +53,7 @@ class NetworkManager:
                 if (uasyncio.ticks_diff(uasyncio.ticks_ms(), start_time) >
                         self.timeout * 1000):
                     print("Connection timeout")
+
                     return False
 
                 print("Waiting for connection...")
@@ -57,10 +61,12 @@ class NetworkManager:
 
             print("WiFi connected!")
             print(f"Network config: {self.wlan.ifconfig()}")
+
             return True
 
         except Exception as e:
             print(f"Connection error: {str(e)}")
+
             return False
 
     def disconnect(self):
@@ -70,6 +76,7 @@ class NetworkManager:
                 self.wlan.disconnect()
                 self.wlan.active(False)
                 print("WiFi disconnected")
+
             except Exception as e:
                 print(f"Disconnection error: {str(e)}")
 

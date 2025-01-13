@@ -42,6 +42,7 @@ class PushoverProvider(BaseProvider):
 
                 if response.status_code == 200:
                     print("Pushover notification sent")
+
                 else:
                     print(f"Failed to send to Pushover: {response.text}")
 

@@ -36,6 +36,7 @@ class NodeRedProvider(BaseProvider):
 
             if response.status_code == 200:
                 print("Node-RED request successful")
+
             else:
                 print(f"Node-RED request failed: {response.text}")
 

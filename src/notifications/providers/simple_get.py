@@ -31,6 +31,7 @@ class SimpleGetProvider(BaseProvider):
 
             if response.status_code == 200:
                 print("GET request successful")
+
             else:
                 print(f"GET request failed: {response.text}")
 

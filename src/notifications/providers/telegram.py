@@ -45,6 +45,7 @@ class TelegramProvider(BaseProvider):
 
                     if response.status_code == 200:
                         print(f"Message sent to {chat_id}")
+
                     else:
                         print(f"Failed to send to {chat_id}: {response.text}")
 
