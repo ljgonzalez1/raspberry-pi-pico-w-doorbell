@@ -36,7 +36,7 @@ class WiFiManager:
         self._wlan.connect(settings.WIFI_SSID, settings.WIFI_PASS)
 
         # Intentamos conectarnos durante un número limitado de iteraciones
-        for attempt in range(50):
+        for attempt in range(200):
             if self._wlan.isconnected():
                 self.logger.info("WiFiManager: Successfully connected to Wi-Fi.")
                 return
