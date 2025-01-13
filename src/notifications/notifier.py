@@ -4,6 +4,7 @@ Main notification orchestrator.
 from typing import List
 from .providers.base import NotificationProvider
 
+
 class Notifier:
     def __init__(self, providers: List[NotificationProvider]):
         self.providers = providers

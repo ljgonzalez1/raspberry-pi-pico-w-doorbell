@@ -22,6 +22,7 @@ class NotificationFactory:
         for provider_name in enabled_providers:
             if provider_name in cls._providers:
                 providers.append(cls._providers[provider_name]())
+
         return Notifier(providers)
 
     @classmethod

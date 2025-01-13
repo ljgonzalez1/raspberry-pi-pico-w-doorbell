@@ -1,6 +1,7 @@
 """
 Telegram notification provider implementation.
 """
+
 import ujson
 import urequests
 from .base import NotificationProvider
@@ -19,20 +20,24 @@ class TelegramProvider(NotificationProvider):
             await self.connect()
             for chat_id in settings.TELEGRAM_CHAT_IDS:
                 await self._send_message(chat_id, message)
+
         finally:
             await self.disconnect()
 
     async def _send_message(self, chat_id: str, message: str):
         url = f"{self.base_url}/sendMessage"
+
         data = {
             "chat_id": chat_id,
             "text": message
         }
+
         response = urequests.post(
             url,
             headers={'Content-Type': 'application/json'},
             data=ujson.dumps(data)
         )
+
         response.close()
 
     async def connect(self):

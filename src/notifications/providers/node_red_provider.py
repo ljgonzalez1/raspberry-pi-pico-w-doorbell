@@ -20,11 +20,13 @@ class NodeRedProvider(NotificationProvider):
         """
         self.wifi = WiFiManager()
         self.config = settings.NODE_RED_CONFIG
+
         self.url = (
             f"{self.config['protocol']}://"
             f"{self.config['host']}:{self.config['port']}/"
             f"{self.config['path']}"
         )
+
         self.connected = False
 
     async def connect(self):
@@ -51,6 +53,7 @@ class NodeRedProvider(NotificationProvider):
             payload_url = f"{self.url}?payload={message}"
             response = urequests.get(payload_url)
             response.close()
+
         except Exception as e:
             print(f"Error sending message to Node-RED: {e}")
 

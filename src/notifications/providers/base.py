@@ -1,7 +1,9 @@
 """
 Base interface for notification providers.
 """
+
 from abc import ABC, abstractmethod
+
 
 class NotificationProvider(ABC):
     @abstractmethod

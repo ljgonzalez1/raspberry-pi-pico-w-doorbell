@@ -1,6 +1,7 @@
 """
 Application settings and configuration.
 """
+
 from . import credentials
 
 # Hardware Configuration

@@ -1,6 +1,7 @@
 """
 LED heartbeat indicator functionality.
 """
+
 import uasyncio as asyncio
 from machine import Pin
 

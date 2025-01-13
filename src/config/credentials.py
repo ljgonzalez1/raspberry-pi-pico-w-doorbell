@@ -15,6 +15,6 @@ TELEGRAM_CHAT_IDS = [
 ]
 
 # Node-RED Configuration
-NODE_RED_HOST = "10.0.10.4"  # Dirección IP o dominio del servidor Node-RED
-NODE_RED_PORT = "1880"       # Puerto (por defecto 1880 en Node-RED)
-NODE_RED_PATH = "timbre"     # Ruta del flujo en Node-RED
+NODE_RED_HOST = "10.0.10.4"
+NODE_RED_PORT = "1880"
+NODE_RED_PATH = "timbre"     # Node-RED flow path

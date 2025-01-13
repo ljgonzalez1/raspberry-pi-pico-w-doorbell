@@ -10,6 +10,7 @@ import uasyncio as asyncio
 from config import settings
 from utils.logging import Logger
 
+
 class WiFiManager:
     """
     Manages the Wi-Fi connection using MicroPython's network module.
@@ -39,6 +40,7 @@ class WiFiManager:
             if self._wlan.isconnected():
                 self.logger.info("WiFiManager: Successfully connected to Wi-Fi.")
                 return
+
             self.logger.debug(f"WiFiManager: Connection attempt {attempt+1}...")
             await asyncio.sleep_ms(200)
 
@@ -53,6 +55,7 @@ class WiFiManager:
         if self._wlan.isconnected():
             self.logger.debug("WiFiManager: Disconnecting from Wi-Fi...")
             self._wlan.disconnect()
+
         self._wlan.active(False)
         self.logger.info("WiFiManager: Wi-Fi interface deactivated.")
 
