@@ -5,7 +5,7 @@ import credentials as creds
 
 # Hardware Configuration
 LED_PIN = "LED"
-DOORBELL_PIN = 10
+DOORBELL_PIN = 21
 LED_ENABLED = True
 
 # Network Configuration
