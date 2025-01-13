@@ -11,8 +11,8 @@ from .providers import (
 
 class NotificationFactory:
     _providers = {
-        'telegram': telegram_provider,
-        'node_red': node_red_provider
+        'telegram': telegram_provider.TelegramProvider,
+        'node_red': node_red_provider.NodeRedProvider
     }
 
     @classmethod
@@ -22,7 +22,6 @@ class NotificationFactory:
         for provider_name in enabled_providers:
             if provider_name in cls._providers:
                 providers.append(cls._providers[provider_name]())
-
         return Notifier(providers)
 
     @classmethod
