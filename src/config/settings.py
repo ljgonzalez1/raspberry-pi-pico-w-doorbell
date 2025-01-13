@@ -6,7 +6,7 @@ from . import credentials
 
 # Hardware Configuration
 LED_PIN = "LED"
-DOORBELL_PIN = 10
+DOORBELL_PIN = 21
 
 # Network Configuration
 WIFI_SSID = credentials.WIFI_SSID
