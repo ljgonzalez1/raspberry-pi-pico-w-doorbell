@@ -113,4 +113,5 @@ class Notifier:
             if self.heart_led:
                 self.heart_led.set_state(self.heart_led.STATE_NORMAL)
             if network_connected:
-                self.network.disconnect()
+                #self.network.disconnect()
+                pass
