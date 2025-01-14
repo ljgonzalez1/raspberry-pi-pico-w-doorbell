@@ -42,6 +42,8 @@ class NetworkManager:
         if self.wlan.isconnected():
             return True
 
+        super_attempt = 0
+
         while not self.wlan.isconnected() and super_attempt < self.SUPER_ATTEMPTS:
 
             try:
