@@ -76,7 +76,7 @@ async def monitor_doorbell():
         if current_state == 0 and last_state == 1:
             consecutive_reads += 1
             if consecutive_reads >= required_reads:
-                print("Doorbell pressed!")
+                print("¡Sonó el timbre!")
                 await notifier.notify("¡Sonó el timbre!")
                 consecutive_reads = 0
                 # Debounce delay
