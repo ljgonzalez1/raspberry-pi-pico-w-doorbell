@@ -64,7 +64,7 @@ notifier = Notifier(providers, heart)
 async def monitor_doorbell():
     """Monitor doorbell state and trigger notifications."""
     last_state = doorbell_pin.value()
-    debounce_time = 15  # Reduced from 500ms to 15ms
+    debounce_time = 5  # Reduced from 500ms to 15ms
     consecutive_reads = 0
     required_reads = 3  # Number of consecutive readings needed to confirm
     # press
