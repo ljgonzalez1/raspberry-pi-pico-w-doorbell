@@ -15,7 +15,6 @@ class NetworkManager:
 
     _instance = None
     MAX_ATTEMPTS = 120  # 120 attempts * 0.5s = 60s total
-    SUPER_ATTEMPTS = 3
 
     def __new__(cls):
         if cls._instance is None:
@@ -42,53 +41,44 @@ class NetworkManager:
         if self.wlan.isconnected():
             return True
 
-        super_attempt = 0
+        try:
+            print(f"Connecting to WiFi network: {self.ssid}")
+            self.wlan.connect(self.ssid, self.password)
 
-        while not self.wlan.isconnected() and super_attempt < self.SUPER_ATTEMPTS:
+            # Wait for connection with retries
+            attempts = 0
 
-            try:
-                print(f"Connecting to WiFi network: {self.ssid}")
-                self.wlan.connect(self.ssid, self.password)
+            while not self.wlan.isconnected() and attempts < self.MAX_ATTEMPTS:
+                attempts += 1
+                print(f"Connection attempt {attempts}/{self.MAX_ATTEMPTS}")
 
-                # Wait for connection with retries
-                attempts = 0
+                status = self.wlan.status()
+                if status == network.STAT_CONNECTING:
+                    print("Still connecting...")
+                elif status == network.STAT_WRONG_PASSWORD:
+                    print("Wrong password, retrying...")
+                    self.wlan.connect(self.ssid, self.password)
+                elif status == network.STAT_NO_AP_FOUND:
+                    print("Network not found, retrying...")
+                    self.wlan.connect(self.ssid, self.password)
+                elif status == network.STAT_CONNECT_FAIL:
+                    print("Connection failed, retrying...")
+                    self.wlan.connect(self.ssid, self.password)
 
-                while not self.wlan.isconnected() and attempts < self.MAX_ATTEMPTS:
-                    attempts += 1
-                    print(f"Connection attempt {attempts}/{self.MAX_ATTEMPTS}")
+                await uasyncio.sleep(0.5)
 
-                    status = self.wlan.status()
-
-                    if status == network.STAT_CONNECTING:
-                        print("Still connecting...")
-
-                    elif status == network.STAT_WRONG_PASSWORD:
-                        print("Wrong password, retrying...")
-                        self.wlan.connect(self.ssid, self.password)
-
-                    elif status == network.STAT_NO_AP_FOUND:
-                        print("Network not found, retrying...")
-                        self.wlan.connect(self.ssid, self.password)
-
-                    elif status == network.STAT_CONNECT_FAIL:
-                        print("Connection failed, retrying...")
-                        self.wlan.connect(self.ssid, self.password)
-
-                    await uasyncio.sleep(0.5)
-
-                if self.wlan.isconnected():
-                    print("WiFi connected!")
-                    print(f"Network config: {self.wlan.ifconfig()}")
-                    return True
-
-                else:
-                    print(f"Failed to connect after {self.MAX_ATTEMPTS} attempts")
-                    return False
-
-            except Exception as e:
-                print(f"Connection error: {str(e)}")
-                self.wlan.connect(self.ssid, self.password)  # Intenta reconectar incluso después de un error
+            if self.wlan.isconnected():
+                print("WiFi connected!")
+                print(f"Network config: {self.wlan.ifconfig()}")
+                return True
+            else:
+                print(f"Failed to connect after {self.MAX_ATTEMPTS} attempts")
                 return False
+
+        except Exception as e:
+            print(f"Connection error: {str(e)}")
+            self.wlan.connect(self.ssid, self.password)  # Intenta reconectar incluso después de un error
+            return False
 
     def disconnect(self):
         """Disconnect from WiFi network."""
