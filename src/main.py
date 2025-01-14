@@ -88,20 +88,21 @@ async def monitor_doorbell():
         # Reduced sleep time for faster sampling
         await uasyncio.sleep_ms(0)
 
-# Run the event loop
-while True:  # Avoid halt
-    try:
-        print("Starting doorbell monitor...")
-        uasyncio.run(main())
+if __name__ == "__main__":
+    # Run the event loop
+    while True:  # Avoid halt
+        try:
+            print("Starting doorbell monitor...")
+            uasyncio.run(main())
 
-    except KeyboardInterrupt:
-        print("Application stopped")
-        break
+        except KeyboardInterrupt:
+            print("Application stopped")
+            break
 
-    except Exception as e:
-        print(f"Fatal error: {str(e)}")
+        except Exception as e:
+            print(f"Fatal error: {str(e)}")
 
-    finally:
-        # Clean up
-        if heart:
-            heart.stop()
+        finally:
+            # Clean up
+            if heart:
+                heart.stop()
