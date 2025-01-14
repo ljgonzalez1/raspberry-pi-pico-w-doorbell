@@ -63,27 +63,30 @@ notifier = Notifier(providers, heart)
 
 async def monitor_doorbell():
     """Monitor doorbell state and trigger notifications."""
+    last_state = doorbell_pin.value()
+    debounce_time = 15  # Reduced from 500ms to 15ms
+    consecutive_reads = 0
+    required_reads = 3  # Number of consecutive readings needed to confirm
+    # press
+
     while True:
-        if not doorbell_pin.value():
-            print("Doorbell pressed!")
+        current_state = doorbell_pin.value()
 
-            await notifier.notify("Doorbell pressed!")
+        # Detect falling edge (button press)
+        if current_state == 0 and last_state == 1:
+            consecutive_reads += 1
+            if consecutive_reads >= required_reads:
+                print("Doorbell pressed!")
+                await notifier.notify("¡Sonó el timbre!")
+                consecutive_reads = 0
+                # Debounce delay
+                await uasyncio.sleep_ms(debounce_time)
+        else:
+            consecutive_reads = 0
 
-            # Debounce delay
-            await uasyncio.sleep_ms(500)
-
-        await uasyncio.sleep_ms(1)
-
-
-async def main():
-    """Main application coroutine."""
-    tasks = [
-        uasyncio.create_task(heart.run()),
-        uasyncio.create_task(monitor_doorbell())
-    ]
-
-    await uasyncio.gather(*tasks)
-
+        last_state = current_state
+        # Reduced sleep time for faster sampling
+        await uasyncio.sleep_ms(0)
 
 # Run the event loop
 try:
