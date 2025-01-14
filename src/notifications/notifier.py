@@ -43,7 +43,19 @@ class Notifier:
 
         try:
             provider_name = provider.__class__.__name__
-            print(f"Sending via {provider_name} (Attempt {attempt}/{self.MAX_RETRIES})")
+            print(
+                f"Sending via {provider_name} (Attempt {attempt}/"
+                f"{self.MAX_RETRIES})")
+            print(
+                f"Message: {message}")  # Debug: mostrar el mensaje antes de
+            # enviarlo
+
+            # Validar que el mensaje no esté vacío
+            if not message or not isinstance(message, str):
+                print(
+                    f"Error: Invalid message format in provider {provider_name}")
+                return False
+
             await provider.send(message)
             print(f"Successfully sent via {provider_name}")
             return True

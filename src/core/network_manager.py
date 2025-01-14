@@ -25,8 +25,8 @@ class NetworkManager:
 
     def __init__(self):
         if not self.is_initialized:
-            self.ssid = "CompuMundoHiperMegaRed 2.4GHz"
-            self.password = "amapolas3920sinespacios"
+            self.ssid = settings.WIFI_SSID
+            self.password = settings.WIFI_PASS
             self.timeout = settings.WIFI_CONNECT_TIMEOUT
             self.wlan.active(True)
             self.is_initialized = True
@@ -110,6 +110,10 @@ class NetworkManager:
 
                 elif current_status == network.STAT_NO_AP_FOUND:
                     print(f"Network not found! Status: {self._get_status_text(current_status)}")
+                    return False
+
+                elif current_status < 0:
+                    print(f"Network error! Status: {self._get_status_text(current_status)}")
                     return False
 
                 elif current_status == network.STAT_CONNECT_FAIL:
