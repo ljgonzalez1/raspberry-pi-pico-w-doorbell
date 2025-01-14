@@ -61,13 +61,18 @@ if settings.PROVIDER_PUSHOVER_ENABLED:
 notifier = Notifier(providers, heart)
 
 
+async def send_startup_notification():
+    """Send initial notification when system starts up."""
+    print("Enviando notificación inicial de arranque...")
+    await notifier.notify("¡Sistema de timbre iniciado! 🔔")
+
+
 async def monitor_doorbell():
     """Monitor doorbell state and trigger notifications."""
     last_state = doorbell_pin.value()
     debounce_time = 5
     consecutive_reads = 0
-    required_reads = 1  # Number of consecutive readings needed to confirm
-    # press
+    required_reads = 1  # Number of consecutive readings needed to confirm press
 
     while True:
         current_state = doorbell_pin.value()
@@ -91,15 +96,21 @@ async def monitor_doorbell():
 
 async def main():
     """Main application coroutine."""
+    print("Inicializando sistema...")
+
+    # Enviar notificación inicial
+    await send_startup_notification()
+
+    # Crear y ejecutar tareas normales
     tasks = [
         uasyncio.create_task(heart.run()),
         uasyncio.create_task(monitor_doorbell())
     ]
+
     await uasyncio.gather(*tasks)
 
 
 if __name__ == "__main__":
-    # Run the event loop
     while True:  # Avoid halt
         try:
             print("Starting doorbell monitor...")
