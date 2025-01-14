@@ -88,6 +88,16 @@ async def monitor_doorbell():
         # Reduced sleep time for faster sampling
         await uasyncio.sleep_ms(0)
 
+
+async def main():
+    """Main application coroutine."""
+    tasks = [
+        uasyncio.create_task(heart.run()),
+        uasyncio.create_task(monitor_doorbell())
+    ]
+    await uasyncio.gather(*tasks)
+
+
 if __name__ == "__main__":
     # Run the event loop
     while True:  # Avoid halt
