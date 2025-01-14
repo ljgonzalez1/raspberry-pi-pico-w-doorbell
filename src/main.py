@@ -61,13 +61,18 @@ if settings.PROVIDER_PUSHOVER_ENABLED:
 notifier = Notifier(providers, heart)
 
 
+async def send_startup_notification():
+    """Send initial notification when system starts up."""
+    print("Enviando notificación inicial de arranque...")
+    await notifier.notify("¡Sistema de timbre iniciado! 🔔")
+
+
 async def monitor_doorbell():
     """Monitor doorbell state and trigger notifications."""
     last_state = doorbell_pin.value()
-    debounce_time = 15  # Reduced from 500ms to 15ms
+    debounce_time = 5
     consecutive_reads = 0
-    required_reads = 3  # Number of consecutive readings needed to confirm
-    # press
+    required_reads = 1  # Number of consecutive readings needed to confirm press
 
     while True:
         current_state = doorbell_pin.value()
@@ -76,7 +81,7 @@ async def monitor_doorbell():
         if current_state == 0 and last_state == 1:
             consecutive_reads += 1
             if consecutive_reads >= required_reads:
-                print("Doorbell pressed!")
+                print("¡Sonó el timbre!")
                 await notifier.notify("¡Sonó el timbre!")
                 consecutive_reads = 0
                 # Debounce delay
@@ -88,18 +93,37 @@ async def monitor_doorbell():
         # Reduced sleep time for faster sampling
         await uasyncio.sleep_ms(0)
 
-# Run the event loop
-try:
-    print("Starting doorbell monitor...")
-    uasyncio.run(main())
 
-except KeyboardInterrupt:
-    print("Application stopped")
+async def main():
+    """Main application coroutine."""
+    print("Inicializando sistema...")
 
-except Exception as e:
-    print(f"Fatal error: {str(e)}")
+    # Enviar notificación inicial
+    await send_startup_notification()
 
-finally:
-    # Clean up
-    if heart:
-        heart.stop()
+    # Crear y ejecutar tareas normales
+    tasks = [
+        uasyncio.create_task(heart.run()),
+        uasyncio.create_task(monitor_doorbell())
+    ]
+
+    await uasyncio.gather(*tasks)
+
+
+if __name__ == "__main__":
+    while True:  # Avoid halt
+        try:
+            print("Starting doorbell monitor...")
+            uasyncio.run(main())
+
+        except KeyboardInterrupt:
+            print("Application stopped")
+            break
+
+        except Exception as e:
+            print(f"Fatal error: {str(e)}")
+
+        finally:
+            # Clean up
+            if heart:
+                heart.stop()

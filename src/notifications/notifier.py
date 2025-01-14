@@ -12,7 +12,7 @@ class Notifier:
     Manages network connection and LED status indication.
     """
 
-    MAX_RETRIES = 3
+    MAX_RETRIES = 5
     RETRY_DELAY_MS = 1000  # 1 segundo entre intentos
 
     def __init__(self, providers, heart_led=None):
@@ -39,9 +39,23 @@ class Notifier:
         Returns:
             bool: True if successful, False otherwise
         """
+        provider_name = None
+
         try:
             provider_name = provider.__class__.__name__
-            print(f"Sending via {provider_name} (Attempt {attempt}/{self.MAX_RETRIES})")
+            print(
+                f"Sending via {provider_name} (Attempt {attempt}/"
+                f"{self.MAX_RETRIES})")
+            print(
+                f"Message: {message}")  # Debug: mostrar el mensaje antes de
+            # enviarlo
+
+            # Validar que el mensaje no esté vacío
+            if not message or not isinstance(message, str):
+                print(
+                    f"Error: Invalid message format in provider {provider_name}")
+                return False
+
             await provider.send(message)
             print(f"Successfully sent via {provider_name}")
             return True
@@ -111,4 +125,5 @@ class Notifier:
             if self.heart_led:
                 self.heart_led.set_state(self.heart_led.STATE_NORMAL)
             if network_connected:
-                self.network.disconnect()
+                #self.network.disconnect()
+                pass
